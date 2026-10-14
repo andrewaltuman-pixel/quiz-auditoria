@@ -175,7 +175,11 @@ div.opt:active{transform:none}
 .pod{background:var(--card);color:var(--ink);border-radius:12px 12px 0 0;width:min(32%,180px);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:2px;padding:10px 6px;text-align:center;box-shadow:0 6px 0 rgba(0,0,0,.18);overflow:hidden}
 .pod b{font-size:clamp(13px,3vw,17px);word-break:break-word}
 .pod small{color:var(--muted);font-size:12px}
-.opts button.opt{width:100%}</style>
+.opts button.opt{width:100%}
+.cmp{width:100%;border-collapse:collapse;font-size:14px}
+.cmp th,.cmp td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right}
+.cmp th:first-child,.cmp td:first-child{text-align:left}
+.cmp th{color:var(--muted);font-size:12px;text-transform:uppercase}</style>
 </head>
 <body>
 <div id="app"></div>
@@ -193,9 +197,13 @@ var TOPICS={
   obj:'Objetivos y características',
   campos:'Campos de acción',
   perfil:'Perfil y competencias',
-  etica:'Ética profesional'
+  etica:'Ética profesional',
+  herr:'Herramientas y evidencia',
+  autor:'Autorización y marco legal',
+  hallazgo:'Hallazgos e incidentes',
+  casos:'Casos documentados'
 };
-var TOPIC_COL={clasif:'#1368ce',obj:'#e21b3c',campos:'#b98300',perfil:'#26890c',etica:'#864cbf'};
+var TOPIC_COL={clasif:'#1368ce',obj:'#e21b3c',campos:'#b98300',perfil:'#26890c',etica:'#864cbf',herr:'#0e7c86',autor:'#c2410c',hallazgo:'#4d5bd1',casos:'#a21caf'};
 
 var QUESTIONS=[
  {id:'q16',topic:'etica',type:'mc',time:60,
@@ -280,7 +288,115 @@ var QUESTIONS=[
   why:'La información obtenida en la auditoría se protege y solo se comunica por canales autorizados.'}
 ];
 
-window.__u={shapeSVG:shapeSVG,esc:esc,setBg:setBg};window.__Q=QUESTIONS;window.__home=showHome;
+/* =====================================================
+   POST-TEST: conceptos de la clase 02 (presentación unificada
+   con casos documentados). Mismos temas base para comparar
+   con el pre-test + temas nuevos de la clase.
+   ===================================================== */
+var QUESTIONS_POST=[
+ {id:'p1',topic:'obj',type:'mc',time:45,
+  q:'¿Qué diferencia a la auditoría informática del soporte TI y del hacking ético?',
+  options:['La auditoría corrige incidentes y mantiene los servicios','La auditoría evalúa controles, riesgos y evidencia en un alcance aprobado; el hacking ético puede aportar evidencia','Son lo mismo con distinto nombre','El hacking ético reemplaza a la auditoría cuando hay poco tiempo'],
+  correct:1,
+  why:'Soporte corrige y mantiene; el hacking ético son pruebas técnicas autorizadas. La auditoría interpreta esa evidencia contra criterios y reporta.'},
+ {id:'p2',topic:'clasif',type:'mc',time:45,
+  q:'Un equipo externo revisa solo los roles de PostgreSQL para verificar una resolución. ¿Qué clasificación responde a la pregunta «¿CUÁNTO abarca?»',
+  options:['Externa','De cumplimiento','De bases de datos','Focalizada'],
+  correct:3,
+  why:'Quién → externa; para qué → cumplimiento; qué → bases de datos; cuánto → focalizada (vs. integral). Las cuatro dimensiones conviven.'},
+ {id:'p3',topic:'obj',type:'mc',time:45,
+  q:'Según el procedimiento profesional, ¿con qué comienza una auditoría?',
+  options:['Ejecutando Nmap sobre toda la red','Planificando: objetivo, alcance, criterios y equipo','Redactando el informe preliminar','Pidiendo la contraseña de administrador'],
+  correct:1,
+  why:'Una auditoría no comienza ejecutando Nmap: comienza definiendo el riesgo. Planificar → autorizar → relevar → verificar → documentar → informar → dar seguimiento.'},
+ {id:'p4',topic:'campos',type:'mc',time:45,
+  q:'Los dispositivos de la red de invitados alcanzan servicios de la red interna. ¿Qué recomendación corresponde?',
+  options:['Segmentación (VLAN), reglas de acceso (ACL) y validación periódica','Cambiar la contraseña del Wi-Fi una vez al año','Hacer más respaldos diarios','Desinstalar el antivirus de los invitados'],
+  correct:0,
+  why:'Riesgo: exposición de activos y movimiento lateral. Evidencia: VLAN, ACL, diagrama y pruebas autorizadas. Recomendación: segmentar y validar.'},
+ {id:'p5',topic:'campos',type:'mc',time:45,
+  q:'Un empleado dejó la empresa y su cuenta del ERP sigue activa. ¿Qué evidencia es la más adecuada?',
+  options:['Un escaneo de puertos con Nmap','Nómina de RR.HH. + cuentas habilitadas + registros de inicio de sesión','Un traceroute al servidor del ERP','Una consulta whois del dominio'],
+  correct:1,
+  why:'Se concilia RR.HH. con TI y se revisan los accesos. Recomendación: baja oportuna, conciliación RR.HH.–TI y revisión periódica de cuentas.'},
+ {id:'p6',topic:'campos',type:'tf',time:30,
+  q:'Si el sistema informa copias de respaldo diarias exitosas, el control de continuidad está verificado.',
+  options:['Verdadero','Falso'],
+  correct:1,
+  why:'Hay que comprobar la recuperación, no solo la existencia: se piden resultados de restauraciones de prueba, responsables y objetivos de recuperación.'},
+ {id:'p7',topic:'herr',type:'mc',time:45,
+  q:'En la red aprobada, ¿qué herramienta usarías para identificar servicios y versiones expuestos en un host?',
+  options:['ping','whois','nmap -sV','traceroute'],
+  correct:2,
+  why:'Nmap es un escáner de hosts, puertos y servicios; -sV detecta versiones. ping comprueba conectividad, traceroute muestra saltos y whois consulta registros.'},
+ {id:'p8',topic:'herr',type:'mc',time:45,
+  q:'¿Para qué sirve Lynis en una auditoría?',
+  options:['Revisar la configuración y el endurecimiento de sistemas Unix/Linux','Capturar paquetes de red en un archivo PCAP','Consultar datos registrales de un dominio','Administrar usuarios de PostgreSQL'],
+  correct:0,
+  why:'«sudo lynis audit system» genera un reporte local de verificaciones y advertencias de configuración. Para tráfico se usa Wireshark/TShark; para PostgreSQL, psql.'},
+ {id:'p9',topic:'hallazgo',type:'tf',time:30,
+  q:'Si Nmap muestra «22/tcp open ssh», eso ya es una vulnerabilidad confirmada.',
+  options:['Verdadero','Falso'],
+  correct:1,
+  why:'Puerto abierto ≠ vulnerabilidad. Se compara servicio, necesidad del negocio, configuración, exposición y controles antes de concluir.'},
+ {id:'p10',topic:'hallazgo',type:'mc',time:45,
+  q:'«Dos operadores utilizan la misma cuenta genérica.» En el modelo de hallazgo, esto es la…',
+  options:['Recomendación','Criterio','Condición','Seguimiento'],
+  correct:2,
+  why:'Condición = lo que se observó. Criterio = lo que debería ser (operaciones atribuibles a un usuario). Luego evidencia, riesgo, recomendación y seguimiento.'},
+ {id:'p11',topic:'autor',type:'mc',time:45,
+  q:'Antes de ejecutar pruebas técnicas, ¿qué es indispensable?',
+  options:['Un permiso verbal del administrador de turno','Tener credenciales de administrador','Autorización escrita del responsable legítimo, con alcance, pruebas, ventana y contactos','Avisar por correo al terminar las pruebas'],
+  correct:2,
+  why:'No basta con credenciales, conocimientos técnicos ni permiso verbal: la autorización debe ser escrita y provenir de quien tiene facultades para concederla.'},
+ {id:'p12',topic:'autor',type:'mc',time:45,
+  q:'¿Qué documento define las pruebas permitidas y prohibidas, los límites de tráfico, el escalamiento y la parada segura?',
+  options:['Acta de cierre','Reglas de compromiso (RoE)','Acuerdo de confidencialidad','Orden de servicio'],
+  correct:1,
+  why:'Las RoE fijan cómo se ejecuta la prueba. El contrato fija responsables y entregables; la carta de autorización, quién autoriza qué activos y cuándo.'},
+ {id:'p13',topic:'autor',type:'tf',time:30,
+  q:'En Paraguay, tener una cuenta de administrador permite auditar cualquier activo de la organización sin otra autorización.',
+  options:['Verdadero','Falso'],
+  correct:1,
+  why:'Art. 174 b del Código Penal (Ley 4439/2011): el acceso indebido incluye exceder una autorización. Actuar fuera del alcance puede implicar responsabilidad.'},
+ {id:'p14',topic:'etica',type:'mc',time:45,
+  q:'Durante una prueba aparecen datos de pacientes inesperados y el servidor se degrada. ¿Qué corresponde?',
+  options:['Terminar rápido la prueba para no perder la ventana','Borrar los registros para que no quede rastro de la prueba','Copiar los datos como evidencia del hallazgo','Detener, registrar hora y acciones, avisar al contacto acordado y seguir el protocolo'],
+  correct:3,
+  why:'Preservar el entorno y escalar sin improvisar. Nunca modificar registros para ocultar la prueba; se reanuda solo si se autoriza.'},
+ {id:'p15',topic:'etica',type:'mc',time:45,
+  q:'¿Cómo deben manejarse las evidencias que contienen datos personales?',
+  options:['Minimizar, anonimizar capturas, restringir acceso y acordar cifrado y retención','Extraer la base completa para analizarla con calma','Compartirlas en el grupo del equipo para agilizar','Conservarlas indefinidamente por si se necesitan'],
+  correct:0,
+  why:'Confidencialidad: evitar extracción masiva, usar datos sintéticos cuando sea viable y acordar almacenamiento, retención y eliminación.'},
+ {id:'p16',topic:'perfil',type:'mc',time:45,
+  q:'Un auditor competente, cuando el alcance supera sus conocimientos…',
+  options:['Continúa igual para no retrasar el trabajo','Lo declara antes de iniciar y solicita apoyo o limita la tarea','Copia un informe de otra auditoría','Ejecuta todas las herramientas disponibles por las dudas'],
+  correct:1,
+  why:'Perfil = capacidad técnica + metodología + comprensión del negocio + comunicación. Competencia también es saber cuándo detenerse o pedir apoyo.'},
+ {id:'p17',topic:'casos',type:'mc',time:45,
+  q:'Hack the Pentagon (2016) es un ejemplo de…',
+  options:['Un ataque criminal contra el Departamento de Defensa','Un pentest sin autorización que terminó en juicio','Un programa de hacking ético autorizado, con alcance definido y divulgación coordinada','Una fuga de datos por un error de software'],
+  correct:2,
+  why:'Se probaron cinco sitios web públicos (las redes críticas quedaron fuera), con HackerOne gestionando reportes: 138 vulnerabilidades válidas, luego corregidas.'},
+ {id:'p18',topic:'casos',type:'mc',time:45,
+  q:'Heartbleed (CVE-2014-0160): ¿por qué no basta con mirar la etiqueta de versión de OpenSSL?',
+  options:['Porque algunas distribuciones retroportan parches: hay que revisar paquetes y boletines','Porque Heartbleed no afecta a OpenSSL','Porque basta con reiniciar el servidor','Porque «openssl version» nunca muestra la versión real'],
+  correct:0,
+  why:'La comprobación defensiva combina versión, gestor de paquetes y boletín de seguridad. Luego: actualizar, revisar certificados/credenciales y verificar la corrección.'},
+ {id:'p19',topic:'casos',type:'mc',time:45,
+  q:'En Cloudbleed (2017), ¿qué hizo el investigador al detectar datos filtrados en respuestas HTTP?',
+  options:['Publicó los tokens encontrados para demostrar el fallo','Lo reportó en privado a Cloudflare, que mitigó y limpió cachés','Vendió la información a terceros','Ignoró el problema por no estar contratado'],
+  correct:1,
+  why:'Reporte privado → investigación → desactivar funciones afectadas → limpiar cachés → informe público. Nunca conservar ni difundir cookies o tokens ajenos.'},
+ {id:'p20',topic:'hallazgo',type:'mc',time:45,
+  q:'¿De qué depende la gravedad de un hallazgo?',
+  options:['De la herramienta con la que se detectó','De la cantidad de líneas del reporte','Del contexto, la exposición, los controles compensatorios y el impacto','De la antigüedad del sistema'],
+  correct:2,
+  why:'La gravedad se establece por contexto, exposición, controles compensatorios e impacto: no solo por la herramienta utilizada.'}
+];
+
+window.__u={shapeSVG:shapeSVG,esc:esc,setBg:setBg};window.__Q=QUESTIONS;window.__QP=QUESTIONS_POST;window.__T=TOPICS;window.__TC=TOPIC_COL;window.__home=showHome;
 /* =====================================================
    Utilidades
    ===================================================== */
@@ -2965,7 +3081,8 @@ window.qrcode=window.qrcode||qrcode;</script><script>(()=>{function e(e,t,n,r){O
 <script>
 (function(){
 'use strict';
-var U=window.__u,Q=window.__Q,app=document.getElementById('app');
+var U=window.__u,QA=window.__Q,QP=window.__QP||QA,T=window.__T||{},TC=window.__TC||{},Q=QA,app=document.getElementById('app');
+var SAVE='audq_results_v1';
 /* Acceso docente: usuario + hash SHA-256 de la contraseña */
 var USER='docente',PASS='ea39cf7b097e35b1961b587df2826d9cd0ed863c3d94a8c540464cd4850491e4';
 var INP='width:100%;border:3px solid var(--line);border-radius:10px;padding:10px;font:inherit;background:transparent;color:var(--ink)';
@@ -3058,7 +3175,7 @@ function wire(H){
     if(s.ph==='lobby'||(s.ph==='q'&&(st.ph!=='q'||st.i!==s.i)))mine=null;
     if(s.my!=null)mine=s.my;
     if(s.ph==='q')dl=Date.now()+(s.left||0);
-    s.seen=1;st=s;draw();
+    s.seen=1;st=s;setQ();draw();
   };
   H.bye=function(){
     if(host)return;
@@ -3139,8 +3256,10 @@ function hostDraw(){
       '<p class="legend">O escanea el QR para entrar directo.</p>'+
       '<details style="text-align:left"><summary class="legend">Cambiar el enlace del QR</summary><input id="url" style="'+INP+'" value="'+esc(baseUrl())+'"></details></div>'+
       '<div class="card"><h3>Jugadores conectados: <span id="pcount">0</span></h3><div class="chips" id="plist"></div></div>'+
-      '<div class="actions"><button class="btn btn-primary" id="gp">▶ Iniciar pre-test</button><button class="btn btn-primary" id="gq">▶ Iniciar post-test</button><button class="btn btn-dark" id="lb">Cerrar sesión</button></div></div>';
+      '<div class="actions"><button class="btn btn-primary" id="gp">▶ Iniciar pre-test ('+QA.length+')</button><button class="btn btn-primary" id="gq">▶ Iniciar post-test ('+QP.length+')</button><button class="btn btn-dark" id="lb">Cerrar sesión</button></div>'+
+      '<div class="card"><h3>Resultados guardados en este navegador</h3>'+saved()+'</div></div>';
     $('#url').oninput=function(e){$('#qrb').innerHTML=qr(e.target.value)};
+    bindSaved();
     $('#gp').onclick=function(){start('pre')};$('#gq').onclick=function(){start('post')};
     players();
   }else if(st.ph==='q'||st.ph==='r'){
@@ -3155,14 +3274,102 @@ function hostDraw(){
   }else{
     var b=board(999);
     app.innerHTML='<div class="res"><h2>🏆 Podio</h2>'+podium(b)+'<div class="card"><h3>Clasificación ('+b.length+')</h3>'+lines(b)+'</div>'+
-      '<div class="actions"><button class="btn btn-primary" id="csv">⬇ Descargar resultados (Excel)</button><button class="btn btn-primary" id="nr">Nueva ronda</button><button class="btn btn-dark" id="lb">Cerrar sesión</button></div></div>';
+      '<div class="actions"><button class="btn btn-primary" id="csv">⬇ Descargar resultados (Excel)</button><button class="btn btn-primary" id="cmp">📊 Comparar pre / post</button><button class="btn btn-primary" id="nr">Nueva ronda</button><button class="btn btn-dark" id="lb">Cerrar sesión</button></div></div>';
     $('#csv').onclick=csv;
+    $('#cmp').onclick=function(){compare(draw)};
     $('#nr').onclick=function(){st.ph='lobby';ans={};send();draw()};
   }
   var lb=$('#lb');if(lb)lb.onclick=function(){if(st.ph==='lobby'||confirm('¿Cerrar la sesión para todos los estudiantes?')){leave();window.__home()}};
 }
+function setQ(){Q=st.mode==='post'?QP:QA}
+function loadR(){try{return JSON.parse(localStorage.getItem(SAVE)||'{}')||{}}catch(e){return {}}}
+function fdate(d){try{return new Date(d).toLocaleString('es-PY',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}catch(e){return ''}}
+function pc(c,t){return t?Math.round(c/t*100):0}
+function saveRound(){
+  var R=loadR(),pl={};
+  Object.keys(names).forEach(function(p){
+    var h=hist[p]||[],c=0,bt={};
+    Q.forEach(function(q,j){var x=h[j],b=bt[q.topic]=bt[q.topic]||[0,0];b[1]++;if(x&&x.ok===1){c++;b[0]++}});
+    pl[p]={n:names[p],pts:pts[p]||0,c:c,t:Q.length,bt:bt,h:Q.map(function(q,j){var x=h[j];return x&&x.o!=null?x.o:null})};
+  });
+  R[st.mode]={d:new Date().toISOString(),pl:pl};
+  try{localStorage.setItem(SAVE,JSON.stringify(R))}catch(e){}
+  return R;
+}
+function norm(s){return String(s||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
+/* Une pre y post por dispositivo (pid) y, si no coincide, por apodo */
+function pairs(R){
+  var A=(R.pre||{}).pl||{},B=(R.post||{}).pl||{},used={},rows=[],byName={};
+  Object.keys(A).forEach(function(p){byName[norm(A[p].n)]=byName[norm(A[p].n)]||p});
+  Object.keys(B).forEach(function(p){
+    var a=A[p]&&!used[p]?p:null;
+    if(!a){var k=byName[norm(B[p].n)];if(k&&!used[k]&&!B[k])a=k}
+    if(a)used[a]=1;
+    rows.push({pid:p,n:B[p].n,pre:a?A[a]:null,post:B[p]});
+  });
+  Object.keys(A).forEach(function(p){if(!used[p])rows.push({pid:p,n:A[p].n,pre:A[p],post:null})});
+  return rows;
+}
+function avg(pl){var c=0,t=0;Object.keys(pl||{}).forEach(function(p){c+=pl[p].c;t+=pl[p].t});return t?pc(c,t):null}
+function tavg(pl,k){var c=0,t=0;Object.keys(pl||{}).forEach(function(p){var b=pl[p].bt[k];if(b){c+=b[0];t+=b[1]}});return t?pc(c,t):null}
+function compare(back){
+  var R=loadR(),A=(R.pre||{}).pl,B=(R.post||{}).pl,rows=pairs(R);
+  var a=avg(A),b=avg(B),both=rows.filter(function(r){return r.pre&&r.post});
+  var dif=a!=null&&b!=null?b-a:null;
+  var tile=function(l,v,cl){return '<div class="tile'+(cl?' '+cl:'')+'"><small>'+l+'</small><b>'+v+'</b></div>'};
+  var keys=Object.keys(T).filter(function(k){return tavg(A,k)!=null||tavg(B,k)!=null});
+  var bars=keys.map(function(k){
+    var x=tavg(A,k),y=tavg(B,k);
+    return '<div class="trow"><div class="tl"><span>'+esc(T[k])+'</span><span>'+(x==null?'nuevo':x+'%')+' → '+(y==null?'—':y+'%')+'</span></div>'+
+      '<div class="bar"><i class="ghost" style="width:'+(x||0)+'%"></i></div><div class="bar" style="margin-top:3px"><i style="width:'+(y||0)+'%;background:'+(TC[k]||'var(--violet)')+'"></i></div></div>';
+  }).join('');
+  rows.sort(function(r,s){return norm(r.n)<norm(s.n)?-1:1});
+  var tb=rows.map(function(r){
+    var x=r.pre?pc(r.pre.c,r.pre.t):null,y=r.post?pc(r.post.c,r.post.t):null,d=x!=null&&y!=null?y-x:null;
+    return '<tr><td>'+esc(r.n)+'</td><td>'+(x==null?'—':x+'%')+'</td><td>'+(y==null?'—':y+'%')+'</td><td style="color:'+(d==null?'inherit':d>=0?'var(--good)':'var(--bad)')+'">'+(d==null?'—':(d>0?'+':'')+d)+'</td></tr>';
+  }).join('');
+  U.setBg('');
+  app.innerHTML='<div class="res"><h2>📊 Pre-test vs Post-test</h2>'+
+    '<p class="lead">Pre: '+(R.pre?fdate(R.pre.d)+' · '+cnt(A)+' alumnos':'sin datos')+' · Post: '+(R.post?fdate(R.post.d)+' · '+cnt(B)+' alumnos':'sin datos')+'</p>'+
+    '<div class="tiles">'+tile('Promedio pre',a==null?'—':a+'%')+tile('Promedio post',b==null?'—':b+'%')+tile('Diferencia',dif==null?'—':(dif>0?'+':'')+dif+' pp',dif==null?'':dif>=0?'up':'down')+tile('Mejoraron',both.length?both.filter(function(r){return pc(r.post.c,r.post.t)>pc(r.pre.c,r.pre.t)}).length+' / '+both.length:'—')+'</div>'+
+    '<div class="card"><h3>Por tema (gris = pre · color = post)</h3>'+(bars||'<p class="legend">Sin datos.</p>')+'<p class="legend">«Nuevo» = conceptos que solo se evalúan en el post-test.</p></div>'+
+    '<div class="card"><h3>Por alumno</h3><div style="overflow-x:auto"><table class="cmp"><thead><tr><th>Alumno</th><th>Pre</th><th>Post</th><th>Δ pp</th></tr></thead><tbody>'+(tb||'<tr><td colspan="4">Sin datos.</td></tr>')+'</tbody></table></div>'+
+    '<p class="legend">Se emparejan por dispositivo y, si no coincide, por apodo. Pide que usen el mismo apodo en ambos tests.</p></div>'+
+    '<div class="actions"><button class="btn btn-primary" id="ccsv">⬇ Descargar comparación (Excel)</button><button class="btn btn-dark" id="cbk">← Volver</button></div></div>';
+  $('#ccsv').onclick=function(){
+    var out=[['Alumno','Pre %','Post %','Diferencia (pp)','Pre correctas','Post correctas','Pre puntos','Post puntos'].concat(keys.map(function(k){return T[k]+' pre %'}),keys.map(function(k){return T[k]+' post %'}))];
+    rows.forEach(function(r){
+      var x=r.pre?pc(r.pre.c,r.pre.t):'',y=r.post?pc(r.post.c,r.post.t):'';
+      out.push([r.n,x,y,x!==''&&y!==''?y-x:'',r.pre?r.pre.c+'/'+r.pre.t:'',r.post?r.post.c+'/'+r.post.t:'',r.pre?r.pre.pts:'',r.post?r.post.pts:''].concat(
+        keys.map(function(k){var v=r.pre&&r.pre.bt[k];return v?pc(v[0],v[1]):''}),
+        keys.map(function(k){var v=r.post&&r.post.bt[k];return v?pc(v[0],v[1]):''})));
+    });
+    out.push(['PROMEDIO CURSO',a==null?'':a,b==null?'':b,dif==null?'':dif,'','','',''].concat(keys.map(function(k){var v=tavg(A,k);return v==null?'':v}),keys.map(function(k){var v=tavg(B,k);return v==null?'':v})));
+    dl2(out,'comparacion-pre-post-'+new Date().toISOString().slice(0,10)+'.csv');
+  };
+  $('#cbk').onclick=back;
+}
+function dl2(rows,fn){
+  var txt='\ufeff'+rows.map(function(row){return row.map(function(v){v=String(v);if(/^[=+\-@]/.test(v)&&isNaN(+v))v="'"+v;return /[";\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}).join(';')}).join('\r\n');
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([txt],{type:'text/csv;charset=utf-8'}));
+  a.download=fn;document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500);
+}
+function saved(){
+  var R=loadR(),f=function(k,l){return '<p style="margin:4px 0">'+l+': '+(R[k]?'<b>✓ '+fdate(R[k].d)+'</b> · '+cnt(R[k].pl)+' alumnos · promedio '+avg(R[k].pl)+'%':'<span class="legend">pendiente</span>')+'</p>'};
+  return f('pre','Pre-test')+f('post','Post-test')+
+    (R.pre||R.post?'<div class="actions" style="justify-content:flex-start;margin-top:8px"><button class="btn" id="cmp" style="background:var(--violet);color:#fff">📊 Comparar pre / post</button><button class="btn-link" id="clr" style="color:var(--muted)">Borrar resultados guardados</button></div>':'<p class="legend">Al terminar cada test, los resultados quedan guardados aquí para compararlos (aunque cierres la sesión).</p>');
+}
+function bindSaved(){
+  var c=$('#cmp'),x=$('#clr');
+  if(c)c.onclick=function(){compare(draw)};
+  if(x)x.onclick=function(){if(confirm('¿Borrar los resultados guardados de pre-test y post-test?')){try{localStorage.removeItem(SAVE)}catch(e){}draw()}};
+}
 function start(m){
-  st.mode=m;st.i=0;pts={};ans={};hist={};stk={};
+  var R=loadR();
+  if(R[m]&&!confirm('Ya hay un '+(m==='pre'?'pre-test':'post-test')+' guardado ('+fdate(R[m].d)+'). Al terminar esta ronda se reemplazará. ¿Continuar?'))return;
+  st.mode=m;setQ();st.i=0;pts={};ans={};hist={};stk={};
   Object.keys(names).forEach(function(p){if(!online[p])delete names[p];else pts[p]=0});
   nextQ();
 }
@@ -3187,8 +3394,10 @@ function reveal(){
 function next(){
   if(st.ph!=='r')return;
   if(st.i+1<Q.length){st.i++;nextQ();return}
+  var R=saveRound(),pv={};
+  pairs(R).forEach(function(x){if(x.post)pv[x.pid]=x.pre?pc(x.pre.c,x.pre.t):null});
   var r=rank(),sc={};
-  r.forEach(function(p,k){sc[p]=[pts[p]||0,k+1]});
+  r.forEach(function(p,k){var h=hist[p]||[],c=h.filter(function(x){return x&&x.ok===1}).length;sc[p]=[pts[p]||0,k+1,st.mode==='post'?pv[p]:null,pc(c,Q.length)]});
   st.fin={top:board(5),sc:sc,n:r.length};st.ph='end';send();draw();
 }
 function csv(){
@@ -3196,15 +3405,9 @@ function csv(){
   r.forEach(function(p,k){
     var h=hist[p]||[],c=0;
     var cells=Q.map(function(q,j){var x=h[j];if(!x||x.o==null)return 'sin respuesta';if(x.ok)c++;return (x.ok?'OK ':'X ')+String.fromCharCode(65+x.o)});
-    var n=String(names[p]);if(/^[=+\-@]/.test(n))n="'"+n;
-    rows.push([k+1,n,pts[p]||0,c+'/'+Q.length].concat(cells));
+    rows.push([k+1,String(names[p]),pts[p]||0,c+'/'+Q.length].concat(cells));
   });
-  var txt='\ufeff'+rows.map(function(row){return row.map(function(v){v=String(v);return /[";\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}).join(';')}).join('\r\n');
-  var a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([txt],{type:'text/csv;charset=utf-8'}));
-  a.download='resultados-'+st.mode+'-'+new Date().toISOString().slice(0,10)+'.csv';
-  document.body.appendChild(a);a.click();
-  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500);
+  dl2(rows,'resultados-'+st.mode+'-'+new Date().toISOString().slice(0,10)+'.csv');
 }
 function rem(){return host?st.dur*1000-(Date.now()-t0):dl-Date.now()}
 function tick(){
@@ -3257,12 +3460,13 @@ function stuDraw(){
   }else{
     var F=st.fin||{},m=(F.sc||{})[myPid];
     app.innerHTML='<div class="res"><h2>🏆 Fin de la sesión</h2>'+
-      (m?'<div class="card" style="text-align:center"><p class="legend" style="margin:0">Tu resultado</p><div style="font-size:48px;font-weight:900">'+m[1]+'.º</div><p style="margin:0">'+m[0]+' pts · '+F.n+' jugadores</p></div>':'')+
+      (m?'<div class="card" style="text-align:center"><p class="legend" style="margin:0">Tu resultado</p><div style="font-size:48px;font-weight:900">'+m[1]+'.º</div><p style="margin:0">'+m[0]+' pts · '+m[3]+'% de aciertos · '+F.n+' jugadores</p>'+
+        (m[2]!=null?'<p style="margin:10px 0 0;font-size:20px">Pre-test <b>'+m[2]+'%</b> → Post-test <b>'+m[3]+'%</b> <span style="color:'+(m[3]>=m[2]?'var(--good)':'var(--bad)')+'">('+(m[3]-m[2]>0?'+':'')+(m[3]-m[2])+' pp)</span></p>':'')+'</div>':'')+
       podium(F.top||[])+'<div class="card"><h3>Top 5</h3>'+lines(F.top||[])+'</div><div class="actions"><button class="btn btn-primary" id="lb">Salir</button></div></div>';
   }
   var b=$('#lb');if(b)b.onclick=function(){leave();window.__home()};
 }
-function draw(){host?hostDraw():stuDraw()}
+function draw(){setQ();host?hostDraw():stuDraw()}
 
 window.__live={bind:function(){
   var t=$('#liveT'),j=$('#liveJ'),c=$('#liveC');
