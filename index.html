@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Quiz · Auditoría Informática · Clase 2</title>
+<title>Quizz Test</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800;900&display=swap" rel="stylesheet">
@@ -463,9 +463,7 @@ function showHome(){
        '<span style="background:var(--yellow)">'+shapeSVG(2)+'</span>'+
        '<span style="background:var(--green)">'+shapeSVG(3)+'</span>'+
      '</div>'+
-     '<p class="kicker">Ingeniería en Informática · 5.º año</p>'+
-     '<h1>Auditoría Informática</h1>'+
-     '<p class="sub">Clase 2 · Clases de auditoría, campos de acción, perfil del auditor y ética profesional</p>'+
+     '<h1>Quizz Test</h1>'+
    '</header>'+
    '<section class="card name-card">'+
      '<label for="name">Tu apodo para el podio</label>'+
@@ -483,13 +481,12 @@ function showHome(){
    '<section class="card settings"><b>Sesión en vivo</b>'+
      '<input id="liveC" inputmode="numeric" maxlength="5" placeholder="Código de 5 dígitos" style="width:100%;border:3px solid var(--line);border-radius:10px;padding:10px;font:inherit;font-size:20px;background:transparent;color:var(--ink)">'+
      '<button class="btn btn-primary" id="liveJ" type="button" style="background:var(--violet);color:#fff">Unirme con código</button>'+
-     '<button class="btn" id="liveT" type="button" style="background:var(--ink);color:var(--card)">🔒 Soy docente: crear sesión (QR + código)</button></section>'+
+     '<button class="btn" id="liveT" type="button" style="background:var(--ink);color:var(--card)">🔒 Entrar como usuario: crear sesión (QR + código)</button></section>'+
    '<section class="card settings" style="display:none">'+
      '<label class="switch"><span>Mostrar respuestas correctas también en el pre-test</span><input type="checkbox" id="revealPre"></label>'+
      '<label class="switch"><span>Efectos de sonido</span><input type="checkbox" id="snd"></label>'+
    '</section>'+
-   '<div class="foot">Puntaje por precisión y rapidez, con bonus por racha 🔥<br>El docente proyecta la pregunta · cada estudiante responde desde su celular'+
-     '<br><button class="btn-link" id="reset" type="button" style="display:none">Borrar mis resultados</button></div>';
+   '<div class="foot"><button class="btn-link" id="reset" type="button" style="display:none">Borrar mis resultados</button></div>';
 
   $('#name').value=DB.name||'';if(window.__live)window.__live.bind();
   $('#revealPre').checked=!!DB.settings.reveal;
@@ -3084,7 +3081,7 @@ window.qrcode=window.qrcode||qrcode;</script><script>(()=>{function e(e,t,n,r){O
 var U=window.__u,QA=window.__Q,QP=window.__QP||QA,T=window.__T||{},TC=window.__TC||{},Q=QA,app=document.getElementById('app');
 var SAVE='audq_results_v1';
 /* Acceso docente: usuario + hash SHA-256 de la contraseña */
-var USER='docente',PASS='ea39cf7b097e35b1961b587df2826d9cd0ed863c3d94a8c540464cd4850491e4';
+var USER='usuario',PASS='ea39cf7b097e35b1961b587df2826d9cd0ed863c3d94a8c540464cd4850491e4';
 var INP='width:100%;border:3px solid var(--line);border-radius:10px;padding:10px;font:inherit;background:transparent;color:var(--ink)';
 var room=null,code='',host=false,me='',myPid='',dl=0,mine=null,t0=0,tk=null;
 var st={ph:'lobby',i:0,dur:20,mode:'pre'};
@@ -3193,7 +3190,7 @@ function dropped(){
 /* ---------- docente ---------- */
 function login(){
   U.setBg('');
-  app.innerHTML='<div class="center"><h2 style="margin:0;font-size:30px">🔒 Acceso docente</h2><div class="card" style="width:min(380px,100%);display:grid;gap:10px;text-align:left">'+
+  app.innerHTML='<div class="center"><h2 style="margin:0;font-size:30px">🔒 Acceso de usuario</h2><div class="card" style="width:min(380px,100%);display:grid;gap:10px;text-align:left">'+
     '<label class="legend" for="lu">Usuario</label><input id="lu" autocomplete="username" style="'+INP+'">'+
     '<label class="legend" for="lp">Contraseña</label><input id="lp" type="password" autocomplete="current-password" style="'+INP+'">'+
     '<p class="hint" id="lh" style="color:var(--bad);margin:0;min-height:16px"></p><button class="btn" id="lg" style="background:var(--violet);color:#fff">Entrar</button></div>'+
@@ -3201,7 +3198,7 @@ function login(){
   $('#lb').onclick=function(){window.__home()};
   var enter=async function(){
     var h=$('#lh');
-    if(!(window.crypto&&crypto.subtle)){h.textContent='Abre la página desde https para usar el acceso docente.';return}
+    if(!(window.crypto&&crypto.subtle)){h.textContent='Abre la página desde https para usar el acceso de usuario.';return}
     var u=$('#lu').value.trim().toLowerCase(),buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode($('#lp').value));
     var hx=Array.prototype.map.call(new Uint8Array(buf),function(b){return ('0'+b.toString(16)).slice(-2)}).join('');
     if(u===USER&&hx===PASS){h.textContent='';teacher()}else h.textContent='Usuario o contraseña incorrectos.';
@@ -3249,7 +3246,7 @@ function gone(peer){
 function hostDraw(){
   var q=Q[st.i];U.setBg('');
   if(st.ph==='lobby'){
-    app.innerHTML='<div class="res"><h2>Sesión en vivo · Docente</h2>'+
+    app.innerHTML='<div class="res"><h2>Quizz Test · Sesión en vivo</h2>'+
       '<div class="card" style="text-align:center"><p class="legend" style="margin:0">Entra en <b>'+esc(baseUrl())+'</b> y escribe el código</p>'+
       '<div style="font-size:clamp(48px,14vw,96px);font-weight:900;letter-spacing:.12em">'+code+'</div>'+
       '<div id="qrb" style="width:min(220px,60vw);margin:8px auto;background:#fff;border-radius:10px;padding:6px">'+qr()+'</div>'+
