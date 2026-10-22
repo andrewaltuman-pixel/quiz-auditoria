@@ -168,6 +168,11 @@ div.opt:active{transform:none}
 @media (prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important}
 }
+.opt.c2{color:#221800}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.solo{display:none}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.chip{background:var(--violet);color:#fff;border-radius:99px;padding:6px 12px;font-size:14px}
 .modes{display:none}</style>
 </head>
 <body>
@@ -231,6 +236,7 @@ var KEY='fep58_clase3_quiz_v1';
 var DB={};
 try{DB=JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){DB={};}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){}}
+window.__saveName=function(n){DB.name=n;persist();};
 DB.settings=DB.settings||{reveal:false,sound:false};
 
 /* ---------- sonido ---------- */
@@ -295,15 +301,16 @@ function showHome(){
      '<button class="mode proj" data-mode="proj" type="button"><span class="tag">Para el docente</span><strong>Modo proyector</strong>'+
        '<span class="desc">Para proyectar en el aula: el docente avanza, revela la respuesta y comenta. Sin puntaje ni apodo.</span></button>'+
    '</section>'+
-   '<section class="card settings"><b>Sesión en vivo</b>'+
-     '<input id="liveC" inputmode="numeric" maxlength="5" placeholder="Código de 5 dígitos" style="width:100%;border:3px solid var(--line);border-radius:10px;padding:10px;font:inherit;font-size:20px;background:transparent;color:var(--ink)">'+
+   '<section class="card settings"><b>Sesión en vivo</b><p class="legend" style="margin:6px 0 0">Escribe tu apodo y el código de 5 dígitos. En computadora puedes responder con las teclas 1 a 4.</p>'+
+     '<input id="liveC" inputmode="numeric" maxlength="5" autocomplete="off" enterkeyhint="go" placeholder="12345" style="width:100%;border:3px solid var(--line);border-radius:10px;padding:12px;font:inherit;font-size:32px;font-weight:900;letter-spacing:.28em;text-align:center;background:transparent;color:var(--ink)">'+
      '<button class="btn btn-primary" id="liveJ" type="button" style="background:var(--violet);color:#fff">Unirme con código</button>'+
      '<button class="btn-link" id="liveT" type="button" style="color:var(--ink)">🔒 Acceso docente: crear sesión (QR + código)</button></section>'+
-   '<section class="card settings">'+
+   '<section class="card settings solo">'+
      '<label class="switch"><span>Mostrar respuestas correctas también en el pre-test</span><input type="checkbox" id="revealPre"></label>'+
      '<label class="switch"><span>Efectos de sonido</span><input type="checkbox" id="snd"></label>'+
    '</section>'+
-   '<div class="foot">Puntaje por precisión y rapidez, con bonus por racha 🔥<br>Teclas 1–4 para responder · Tus resultados se guardan solo en este dispositivo'+
+   '<div class="foot">El docente proyecta el código. Tus resultados de la sesión en vivo quedan en su pantalla.'+
+     '<br><a class="btn-link" href="auditoria.html">Quiz de Auditoría Informática</a>'+
      '<br><button class="btn-link" id="reset" type="button">Borrar mis resultados</button></div>';
 
   $('#name').value=DB.name||'';if(window.__live)window.__live.bind();
@@ -2897,13 +2904,17 @@ window.qrcode=window.qrcode||qrcode;</script><script>(()=>{function e(e,t,n,r){O
 (function(){
 var U=window.__u,Q=window.__Q,app=document.getElementById('app'),room=null,code='',host=false,me='';
 var st={ph:'lobby',i:0,dur:20,mode:'pre',top:[]},names={},pts={},ans={},mine=null,t0=0,tk=null,sc={},myPeer='';
+var ROOM='fepq',SAVEKEY='fep58_live_v1',pidOf={},saved={};
+try{saved=JSON.parse(sessionStorage.getItem(SAVEKEY)||'{}')||{};}catch(e){saved={};}
+var myPid=localStorage.getItem(SAVEKEY+'_pid');
+if(!myPid){myPid=Math.random().toString(36).slice(2)+Date.now().toString(36);try{localStorage.setItem(SAVEKEY+'_pid',myPid)}catch(e){}}
 function $(s){return document.querySelector(s)}
 var net='';var ICE={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:global.stun.twilio.com:3478'},{urls:'turn:openrelay.metered.ca:80',username:'openrelayproject',credential:'openrelayproject'},{urls:'turn:openrelay.metered.ca:443',username:'openrelayproject',credential:'openrelayproject'}]};
 function esc(s){return U.esc(s)}
 function sty(q,k){return q.type==='tf'?(k===0?1:0):k}
 function qr(u){try{var q=qrcode(0,'M');q.addData(u.split('#')[0]+'#code='+code);q.make();return q.createSvgTag({cellSize:4,margin:2,scalable:true})}catch(e){return ''}}
 function msg(t,back){U.setBg('');app.innerHTML='<div class="center"><p style="font-size:22px;max-width:560px">'+t+'</p><button class="btn btn-primary" id="lb">Volver</button></div>';$('#lb').onclick=function(){leave();window.__home()};}
-function leave(){net='';clearInterval(tk);if(room&&room.leave)try{room.leave()}catch(e){}room=null;host=false;st={ph:'lobby',i:0,dur:20,mode:'pre',top:[]};names={};pts={};ans={};mine=null;sc={};}
+function leave(){net='';clearInterval(tk);if(room&&room.leave)try{room.leave()}catch(e){}room=null;host=false;st={ph:'lobby',i:0,dur:20,mode:'pre',top:[]};names={};pts={};ans={};mine=null;sc={};pidOf={};}
 async function conn(c,asHost){
   var P=window.Peer||(window.peerjs&&window.peerjs.Peer);
   if(!P){msg('No se pudo cargar la conexión en vivo.');return false}
@@ -2913,7 +2924,7 @@ async function conn(c,asHost){
     function disp(p,m){if(m&&H[m.t])H[m.t]({peer:p,data:m.d})}
     room={emit:function(t,d){var m={t:t,d:d};if(asHost){Object.keys(cs).forEach(function(k){try{cs[k].send(m)}catch(e){}})}else if(cs.h&&cs.h.open){try{cs.h.send(m)}catch(e){}}},on:function(t,f){H[t]=f},leave:function(){try{pr.destroy()}catch(e){}}};
     code=c;
-    var cfg={config:ICE};pr=asHost?new P('audq'+c,cfg):new P(undefined,cfg);
+    var cfg={config:ICE};pr=asHost?new P(ROOM+c,cfg):new P(undefined,cfg);
     function fail(t){if(asHost){net='🔴 '+t;if(host)draw()}else msg(t);fin(false)}
     pr.on('error',function(er){var t=er.type==='peer-unavailable'?'Código incorrecto o el docente aún no inició la sesión.':'No se pudo conectar ('+esc(er.type||'error')+'). Revisa tu internet e intenta de nuevo.';if(!done)fail(t);else if(asHost){net='🔴 '+t;draw()}});
     pr.on('disconnected',function(){if(asHost&&done){try{pr.reconnect()}catch(e){}}});
@@ -2921,7 +2932,7 @@ async function conn(c,asHost){
       pr.on('open',function(){net='ok';fin(true);if(host)draw()});
       pr.on('connection',function(cn){cn.on('open',function(){cs[cn.peer]=cn});cn.on('data',function(m){disp(cn.peer,m)});cn.on('close',function(){delete cs[cn.peer]})});
     }else{
-      pr.on('open',function(id){window.__me=id;var cn=pr.connect('audq'+c,{reliable:true});cs.h=cn;
+      pr.on('open',function(id){window.__me=id;var cn=pr.connect(ROOM+c,{reliable:true});cs.h=cn;
         cn.on('open',function(){fin(true)});cn.on('data',function(m){disp('h',m)});
         cn.on('close',function(){if(room){msg('El docente cerró la sesión.')}})});
     }
@@ -2932,9 +2943,12 @@ async function conn(c,asHost){
   });
 }
 function wire(H){
-  H.hello=function(m){if(!host)return;var n=String((m.data||{}).n||'').slice(0,24)||'Anónimo';names[m.peer]=n;if(pts[m.peer]==null)pts[m.peer]=0;send();draw()};
+  H.hello=function(m){if(!host)return;var d=m.data||{},n=String(d.n||'').slice(0,24)||'Anónimo',pid=String(d.pid||m.peer).slice(0,48),old=null;
+  Object.keys(pidOf).forEach(function(p){if(pidOf[p]===pid&&p!==m.peer)old=p;});
+  if(old){if(pts[m.peer]==null)pts[m.peer]=pts[old]||0;if(ans[old]&&ans[m.peer]==null)ans[m.peer]=ans[old];delete pts[old];delete names[old];delete ans[old];delete pidOf[old];}
+  pidOf[m.peer]=pid;names[m.peer]=n;if(pts[m.peer]==null)pts[m.peer]=0;send();draw()};
   H.ans=function(m){var d=m.data||{};if(!host||st.ph!=='q'||d.i!==st.i||ans[m.peer])return;ans[m.peer]={o:d.o|0,t:Date.now()};draw()};
-  H.st=function(m){if(host)return;var o=st,s=m.data;s.seen=1;if(s.ph==='q'&&(o.ph!=='q'||o.i!==s.i)){mine=null;t0=Date.now()}st=s;if(s.ph==='r')st.rev=o.rev;draw()};
+  H.st=function(m){if(host)return;var o=st,s=m.data;s.seen=1;if(s.ph==='lobby'||(s.ph==='q'&&(o.ph!=='q'||o.i!==s.i))){mine=null;t0=Date.now()}st=s;if(s.ph==='r')st.rev=o.rev;draw()};
   H.rev=function(m){if(host)return;sc=m.data.sc||{};st.rev=m.data;draw()};
 }
 function send(){room&&room.emit('st',{ph:st.ph,i:st.i,dur:st.dur,mode:st.mode,top:st.top})}
@@ -2951,35 +2965,53 @@ function hostDraw(){
   if(st.ph==='lobby'){
     app.innerHTML='<div class="res"><h2>Sesión en vivo · Docente</h2>'+(net==='ok'?'<p style="font-weight:700;color:#26890c">🟢 Sesión activa: los estudiantes ya pueden unirse</p>':(net?'<p style="font-weight:700">'+esc(net)+'</p><button class="btn btn-dark" id="rt" type="button">Reintentar</button>':'<p style="font-weight:700">🟡 Conectando con el servidor…</p>'))+'<div class="card" style="text-align:center"><p class="legend">Código de conexión</p><div style="font-size:clamp(48px,14vw,96px);font-weight:900;letter-spacing:.12em">'+code+'</div>'+
     '<div id="qrb" style="width:220px;margin:8px auto;background:#fff;border-radius:10px;padding:6px">'+qr(location.href)+'</div>'+
-    '<label class="legend" for="url">Enlace que abre el QR (pega aquí el enlace compartido si es distinto)</label><input id="url" style="width:100%;border:3px solid var(--line);border-radius:10px;padding:8px;background:transparent;color:var(--ink);font:inherit" value="'+esc(location.href)+'"></div>'+
-    '<div class="card"><h3>Conectados: '+n+'</h3>'+'<p>'+(Object.keys(names).map(function(p){return esc(names[p])}).join(' · ')||'Esperando estudiantes…')+'</p>'+'</div>'+
-    '<div class="actions"><button class="btn btn-primary" id="gp">Iniciar pre-test</button><button class="btn btn-primary" id="gq">Iniciar post-test</button><button class="btn btn-dark" id="lb">Cerrar sesión</button></div></div>';
+    '<label class="legend" for="url">Enlace que abre el QR (pega aquí el enlace compartido si es distinto)</label><input id="url" style="width:100%;border:3px solid var(--line);border-radius:10px;padding:8px;background:transparent;color:var(--ink);font:inherit" value="'+esc(location.href)+'"><div style="margin-top:10px"><button class="btn btn-dark" id="cp" type="button">Copiar código</button></div></div>'+
+    '<div class="card"><h3>Conectados: '+n+'</h3><div class="chips">'+(Object.keys(names).map(function(p){return '<span class="chip">'+esc(names[p])+'</span>'}).join('')||'<p class="legend">Esperando estudiantes…</p>')+'</div></div>'+
+    compareHtml()+
+    '<div class="actions"><button class="btn btn-primary" id="gp">Iniciar pre-test</button><button class="btn btn-primary" id="gq">Iniciar post-test</button>'+(saved.pre||saved.post?'<button class="btn btn-dark" id="dl" type="button">Descargar resultados</button>':'')+'<button class="btn btn-dark" id="lb">Cerrar sesión</button></div></div>';
     $('#url').oninput=function(e){$('#qrb').innerHTML=qr(e.target.value)};
-    $('#gp').onclick=function(){if(net==='ok')go('pre');else alert('Espera a que la sesión esté activa (🟢).')};$('#gq').onclick=function(){if(net==='ok')go('post');else alert('Espera a que la sesión esté activa (🟢).')};var rt=$('#rt');if(rt)rt.onclick=function(){leave();teacher()};
+    $('#cp').onclick=function(){var b=$('#cp');navigator.clipboard.writeText(code).then(function(){b.textContent='¡Copiado!';},function(){b.textContent=code;});};
+    $('#gp').disabled=net!=='ok';$('#gq').disabled=net!=='ok';
+    $('#gp').onclick=function(){if(net==='ok')go('pre')};$('#gq').onclick=function(){if(net==='ok')go('post')};var rt=$('#rt');if(rt)rt.onclick=function(){leave();teacher()};
+    var dl=$('#dl');if(dl)dl.onclick=downloadCsv;
   }else if(st.ph==='q'||st.ph==='r'){
     var cnt=[0,0,0,0];Object.keys(ans).forEach(function(p){cnt[ans[p].o]++});
     app.innerHTML='<div class="qscreen"><div class="topbar"><span class="pill">Pregunta '+(st.i+1)+' / '+Q.length+'</span><span class="pill">Código '+code+'</span><span class="pill" id="clk"></span><span class="pill">Respuestas: '+Object.keys(ans).length+' / '+n+'</span></div>'+
     '<div class="qbox">'+esc(q.q)+'</div><div class="opts '+(q.type==='tf'?'tf':'')+'">'+q.options.map(function(t,k){return '<div class="opt c'+sty(q,k)+(st.ph==='r'?(k===q.correct?' correct':' dim'):'')+'">'+U.shapeSVG(sty(q,k))+'<span>'+esc(t)+(st.ph==='r'?' · '+cnt[k]:'')+'</span></div>'}).join('')+'</div>'+
     (st.ph==='r'?'<div class="why"><b>Explicación:</b> '+esc(q.why)+'</div><div class="card"><h3>Ranking</h3>'+lines(board(5))+'</div>':'')+
-    '<div class="proj-bar"><button class="btn btn-dark" id="lb">Cerrar</button><button class="btn btn-primary" id="nx">'+(st.ph==='q'?'Revelar respuesta':(st.i+1<Q.length?'Siguiente →':'Ver podio'))+'</button></div></div>';
+    '<div class="proj-bar"><button class="btn btn-dark" id="lb">Cerrar</button><button class="btn btn-primary" id="nx">'+(st.ph==='q'?(n>0&&Object.keys(ans).length>=n?'Todos respondieron · Revelar':'Revelar respuesta'):(st.i+1<Q.length?'Siguiente →':'Ver podio'))+'</button></div></div>';
     $('#nx').onclick=function(){st.ph==='q'?reveal():next()};tick();
   }else{
-    app.innerHTML='<div class="res"><h2>🏆 Podio</h2><div class="card">'+lines(board(10))+'</div><div class="actions"><button class="btn btn-primary" id="lb">Cerrar sesión</button></div></div>';
+    app.innerHTML='<div class="res"><h2>🏆 Podio</h2><div class="card">'+lines(board(10))+'</div>'+compareHtml()+'<div class="actions"><button class="btn btn-primary" id="stay">Seguir en la sala</button><button class="btn btn-dark" id="dl" type="button">Descargar resultados</button><button class="btn btn-dark" id="lb">Cerrar sesión</button></div></div>';
+    $('#stay').onclick=function(){st.ph='lobby';send();draw()};
+    $('#dl').onclick=downloadCsv;
   }
   var b=$('#lb');if(b)b.onclick=function(){leave();window.__home()};
 }
+function rowsNow(){return Object.keys(names).map(function(p){return {pid:pidOf[p]||p,name:names[p],pts:pts[p]||0}}).sort(function(a,b){return b.pts-a.pts})}
+function archive(){saved[st.mode]=rowsNow();try{sessionStorage.setItem(SAVEKEY,JSON.stringify(saved))}catch(e){}}
+function compareHtml(){if(!saved.pre||!saved.post)return '';var by={};
+  saved.pre.forEach(function(r){by[r.pid]={name:r.name,pre:r.pts,post:null}});
+  saved.post.forEach(function(r){if(!by[r.pid])by[r.pid]={name:r.name,pre:null,post:r.pts};else{by[r.pid].post=r.pts;by[r.pid].name=r.name}});
+  var rows=Object.keys(by).map(function(k){return by[k]}).sort(function(a,b){return (b.post||0)-(a.post||0)});
+  return '<div class="card"><h3>Pre vs post (puntos)</h3>'+rows.map(function(r){var d=(r.pre==null||r.post==null)?null:r.post-r.pre;return '<div class="trow"><div class="tl"><span>'+esc(r.name)+'</span><span>'+(r.pre==null?'—':r.pre)+' → '+(r.post==null?'—':r.post)+(d==null?'':' ('+(d>0?'+':'')+d+')')+'</span></div></div>'}).join('')+'</div>'}
+function csvText(){var map={};['pre','post'].forEach(function(mode){(saved[mode]||[]).forEach(function(r){if(!map[r.pid])map[r.pid]={name:r.name,pre:'',post:''};map[r.pid][mode]=r.pts;map[r.pid].name=r.name})});
+  var out=['nombre,pre,post'];Object.keys(map).forEach(function(pid){var r=map[pid];out.push('"'+String(r.name).replace(/"/g,'""')+'",'+r.pre+','+r.post)});return out.join('\n')}
+function downloadCsv(){var blob=new Blob([csvText()],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='resultados.csv';document.body.appendChild(a);a.click();a.remove()}
 function go(m){st.mode=m;st.i=0;pts={};Object.keys(names).forEach(function(p){pts[p]=0});nextQ()}
 function nextQ(){ans={};st.ph='q';st.dur=Q[st.i].time;t0=Date.now();send();draw()}
-function reveal(){var q=Q[st.i],sc2={};Object.keys(ans).forEach(function(p){if(ans[p].o===q.correct)pts[p]=(pts[p]||0)+Math.round(1000*(1-.5*Math.min(1,(ans[p].t-t0)/(st.dur*1000))))});
-  Object.keys(pts).slice(0,100).forEach(function(p){sc2[p]=pts[p]});st.ph='r';room.emit('st',{ph:'r',i:st.i,dur:st.dur,mode:st.mode,top:[]});room.emit('rev',{i:st.i,c:q.correct,sc:sc2});draw()}
-function next(){if(st.i+1<Q.length){st.i++;nextQ()}else{st.ph='end';st.top=board(5);send();draw()}}
-function tick(){clearInterval(tk);var el=function(){var c=$('#clk');if(!c)return;var s=Math.max(0,Math.ceil(st.dur-(Date.now()-t0)/1000));c.textContent='⏱ '+s+' s'};el();tk=setInterval(el,500)}
+function reveal(){if(st.ph!=='q')return;st.ph='r';var q=Q[st.i],sc2={},rk={};
+  Object.keys(ans).forEach(function(p){if(ans[p].o===q.correct)pts[p]=(pts[p]||0)+Math.round(1000*(1-.5*Math.min(1,(ans[p].t-t0)/(st.dur*1000))))});
+  Object.keys(pts).sort(function(a,b){return (pts[b]||0)-(pts[a]||0)}).slice(0,100).forEach(function(p,i){sc2[p]=pts[p]||0;rk[p]=i+1});
+  room.emit('st',{ph:'r',i:st.i,dur:st.dur,mode:st.mode,top:[]});room.emit('rev',{i:st.i,c:q.correct,sc:sc2,rk:rk});draw()}
+function next(){if(st.i+1<Q.length){st.i++;nextQ()}else{archive();st.ph='end';st.top=board(5);send();draw()}}
+function tick(){clearInterval(tk);var el=function(){var c=$('#clk');if(!c||st.ph!=='q'){clearInterval(tk);return}var s=Math.max(0,Math.ceil(st.dur-(Date.now()-t0)/1000));c.textContent='⏱ '+s+' s';if(s<=5)c.style.color='#ffd2d9';if(s<=0){clearInterval(tk);if(host)reveal()}};el();tk=setInterval(el,250)}
 /* ---------- estudiante ---------- */
 async function join(c,n){
   U.setBg('');app.innerHTML='<div class="center"><p style="font-size:24px">Conectando…</p></div>';
   if(!await conn(c,false))return;
-  room.emit('hello',{n:n});setTimeout(function(){if(st.ph==='lobby'&&!st.seen)draw()},0);draw();
-  var hi=setInterval(function(){if(!room||st.seen)clearInterval(hi);else room.emit('hello',{n:n})},3000);
+  room.emit('hello',{n:n,pid:myPid});setTimeout(function(){if(st.ph==='lobby'&&!st.seen)draw()},0);draw();
+  var hi=setInterval(function(){if(!room||st.seen)clearInterval(hi);else room.emit('hello',{n:n,pid:myPid})},3000);
 }
 function stuDraw(){
   var q=Q[st.i];U.setBg('');
@@ -2992,7 +3024,7 @@ function stuDraw(){
     var ok=mine===q.correct;U.setBg(ok?'ok':'bad');
     app.innerHTML='<div class="center fb"><div class="fbicon">'+(ok?'✓':'✗')+'</div><div class="fbhead">'+(mine==null?'Sin respuesta':ok?'¡Correcto!':'Incorrecto')+'</div><div class="fbcorrect">Correcta: '+esc(q.options[q.correct])+'</div><div class="why"><b>Explicación:</b> '+esc(q.why)+'</div><div class="fbpts" id="mp"></div></div>';
     var el=$('#mp');el.textContent='Esperando puntaje…';
-    var f=function(){var s=st.rev&&st.rev.sc;if(!s)return;var k=Object.keys(s).sort(function(a,b){return s[b]-s[a]});el.textContent='Total: '+(s[window.__me]!=null?s[window.__me]:'—')+' pts'};f();
+    var f=function(){var s=st.rev&&st.rev.sc;if(!s)return;var id=window.__me,v=s[id],place=st.rev.rk&&st.rev.rk[id];el.textContent='Total: '+(v!=null?v:'—')+' pts'+(place?' · Puesto '+place+' de '+Object.keys(s).length:'')};f();
   }else{app.innerHTML='<div class="res"><h2>🏆 Fin de la sesión</h2><div class="card"><h3>Podio</h3>'+lines(st.top||[])+'</div><div class="actions"><button class="btn btn-primary" id="lb">Salir</button></div></div>'}
   var b=$('#lb');if(b)b.onclick=function(){leave();window.__home()};
 }
@@ -3003,9 +3035,22 @@ window.__live={bind:function(){
   if(j)j.onclick=function(){var c=($('#liveC').value||'').replace(/\D/g,''),n=($('#name').value||'').trim();
     if(c.length!==5){$('#hint').textContent='Escribe el código de 5 dígitos.';return}
     if(!n){$('#hint').textContent='Escribe tu apodo primero.';$('#name').focus();return}
-    me=n;join(c,n)};
-  var m=location.hash.match(/code=(\d{5})/);if(m&&$('#liveC'))$('#liveC').value=m[1];
+    me=n;if(window.__saveName)window.__saveName(n);join(c,n)};
+  var codeEl=$('#liveC'),nameEl=$('#name');
+  if(codeEl&&j)codeEl.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();j.click()}});
+  if(nameEl&&codeEl)nameEl.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();codeEl.focus()}});
+  var m=location.hash.match(/code=(\d{5})/);if(m&&codeEl){codeEl.value=m[1];
+    if(!window.__joinedHash&&nameEl&&nameEl.value.trim()){window.__joinedHash=1;j.click()}
+    else if(nameEl&&!nameEl.value)nameEl.focus()}
 }};
+document.addEventListener('keydown',function(e){
+  if(e.target&&(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'))return;
+  if(host||st.ph!=='q'||mine!=null)return;
+  var n=parseInt(e.key,10),q=Q[st.i];
+  if(!q||n<1||n>q.options.length)return;
+  var b=document.querySelector('.opt[data-o="'+(n-1)+'"]');
+  if(b)b.click();
+});
 if(document.getElementById('liveT'))window.__live.bind();
 })();
 </script>
