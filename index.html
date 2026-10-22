@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Quizz Test</title>
+<title>Quiz · FEP58 · Clase 3 · Indagación de requerimientos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800;900&display=swap" rel="stylesheet">
@@ -168,18 +168,7 @@ div.opt:active{transform:none}
 @media (prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important}
 }
-.modes{display:none}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{background:var(--violet);color:#fff;border-radius:99px;padding:6px 14px;font-size:15px;animation:pop .4s ease-out}
-.podium{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin-top:6px}
-.pod{background:var(--card);color:var(--ink);border-radius:12px 12px 0 0;width:min(32%,180px);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:2px;padding:10px 6px;text-align:center;box-shadow:0 6px 0 rgba(0,0,0,.18);overflow:hidden}
-.pod b{font-size:clamp(13px,3vw,17px);word-break:break-word}
-.pod small{color:var(--muted);font-size:12px}
-.opts button.opt{width:100%}
-.cmp{width:100%;border-collapse:collapse;font-size:14px}
-.cmp th,.cmp td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right}
-.cmp th:first-child,.cmp td:first-child{text-align:left}
-.cmp th{color:var(--muted);font-size:12px;text-transform:uppercase}</style>
+.modes{display:none}</style>
 </head>
 <body>
 <div id="app"></div>
@@ -193,210 +182,36 @@ div.opt:active{transform:none}
    tipo: 'mc' = 4 opciones · 'tf' = verdadero/falso
    ===================================================== */
 var TOPICS={
-  clasif:'Clases de auditoría',
-  obj:'Objetivos y características',
-  campos:'Campos de acción',
-  perfil:'Perfil y competencias',
-  etica:'Ética profesional',
-  herr:'Herramientas y evidencia',
-  autor:'Autorización y marco legal',
-  hallazgo:'Hallazgos e incidentes',
-  casos:'Casos documentados'
+  caso:'Caso HealthCare.gov',
+  conc:'Necesidad y requerimientos',
+  tec:'Técnicas de indagación',
+  red:'Redacción y validación',
+  fact:'Factibilidad'
 };
-var TOPIC_COL={clasif:'#1368ce',obj:'#e21b3c',campos:'#b98300',perfil:'#26890c',etica:'#864cbf',herr:'#0e7c86',autor:'#c2410c',hallazgo:'#4d5bd1',casos:'#a21caf'};
+var TOPIC_COL={caso:'#1368ce',conc:'#e21b3c',tec:'#b98300',red:'#26890c',fact:'#864cbf'};
 
 var QUESTIONS=[
- {id:'q16',topic:'etica',type:'mc',time:60,
-  q:'¿Un hacker puede ser un auditor?',
-  options:['No: hacking y auditoría son incompatibles','Sí, cualquier hacker, sin importar cómo actúe','Sí, siempre que sea un hacker ético','Solo si trabaja dentro de la empresa auditada'],
-  correct:2,
-  why:'Hacker ético: aplica técnicas ofensivas con autorización, alcance definido y reglas acordadas. Su valor como auditor depende de la ética, no de la técnica.'},
- {id:'q1',topic:'clasif',type:'mc',time:60,
-  q:'Las auditorías interna y externa se distinguen, ante todo, por…',
-  options:['el área tecnológica que se examina','quién realiza la auditoría','el tipo de evidencia que se recopila','el tamaño del equipo auditor'],
-  correct:1,
-  why:'Interna/externa responde a «¿quién audita?». No indica la tecnología examinada ni el propósito del trabajo.'},
- {id:'q2',topic:'clasif',type:'tf',time:60,
-  q:'Una auditoría interna no puede ser independiente porque el auditor pertenece a la misma organización.',
-  options:['Verdadero','Falso'],
-  correct:1,
-  why:'Independencia no es sinónimo de ser externo. Puede existir independencia funcional y objetividad dentro de la organización, gestionando las amenazas y los conflictos.'},
- {id:'q3',topic:'clasif',type:'tf',time:60,
-  q:'Una misma auditoría puede ser, al mismo tiempo, interna, de cumplimiento, informática y centrada en bases de datos.',
-  options:['Verdadero','Falso'],
-  correct:0,
-  why:'Cada clasificación responde a una pregunta distinta: ¿quién audita?, ¿para qué?, ¿qué se audita?, ¿cuánto abarca? No son categorías excluyentes.'},
- {id:'q4',topic:'clasif',type:'mc',time:60,
-  q:'Se revisa si la mesa de ayuda resuelve los incidentes dentro de los tiempos definidos y con eficiencia. ¿Cuál es el propósito principal de esta auditoría?',
-  options:['Cumplimiento normativo','Operativa','Aseguramiento financiero','Prueba de penetración'],
-  correct:1,
-  why:'Evaluar eficacia, eficiencia y funcionamiento de un proceso es el propósito de una auditoría operativa.'},
- {id:'q5',topic:'obj',type:'mc',time:60,
-  q:'¿Cuál es el objetivo de una auditoría informática?',
-  options:['Encontrar la mayor cantidad posible de errores técnicos','Evaluar riesgos y controles dentro de un alcance definido, sustentando las conclusiones en evidencia','Corregir las configuraciones deficientes que se encuentren','Demostrar que el sistema puede ser vulnerado'],
-  correct:1,
-  why:'El auditor evalúa y comunica conclusiones útiles; no se trata de «cazar errores». El soporte corrige, y un pentest es solo una posible fuente de evidencia.'},
- {id:'q6',topic:'obj',type:'tf',time:60,
-  q:'Una prueba de penetración (pentest) es sinónimo de auditoría informática.',
-  options:['Verdadero','Falso'],
-  correct:1,
-  why:'Un pentest puede aportar evidencia dentro de un trabajo de seguridad, pero la auditoría tiene un propósito, un alcance y una metodología más amplios.'},
- {id:'q7',topic:'obj',type:'mc',time:60,
-  q:'¿Cuál NO es una característica de la auditoría informática?',
-  options:['Basada en riesgo','Documentada con papeles de trabajo','Sin límites de alcance: pretende revisar absolutamente todo','Basada en evidencia verificable'],
-  correct:2,
-  why:'La auditoría trabaja dentro de un alcance definido y prioriza según el riesgo; no pretende revisar absolutamente todo.'},
- {id:'q8',topic:'campos',type:'mc',time:60,
-  q:'Un programador modifica el sistema en producción sin aprobación ni pruebas previas. ¿Qué campo de acción es el más directamente involucrado?',
-  options:['Desarrollo de sistemas','Redes y comunicaciones','Continuidad y contingencia','Dirección / gobierno de TI'],
-  correct:0,
-  why:'Aprobación, pruebas y paso a producción forman parte del control de cambios en el desarrollo de sistemas.'},
- {id:'q9',topic:'campos',type:'mc',time:60,
-  q:'No existe un plan de recuperación y nunca se probó restaurar un respaldo. ¿Qué campo de acción se ve afectado?',
-  options:['Calidad de software','Redes y comunicaciones','Continuidad y contingencia','Desarrollo de sistemas'],
-  correct:2,
-  why:'Planes de continuidad, respaldos y pruebas de recuperación corresponden al campo de continuidad y contingencia.'},
- {id:'q10',topic:'campos',type:'mc',time:60,
-  q:'Se revisan los roles y privilegios de usuarios en el motor PostgreSQL de un sistema. ¿Qué campos intervienen?',
-  options:['Bases de datos y seguridad lógica','Redes y comunicaciones','Calidad de software','Dirección / gobierno de TI'],
-  correct:0,
-  why:'Usuarios, roles y privilegios son evidencia típica de bases de datos y de seguridad lógica (control de accesos).'},
- {id:'q11',topic:'perfil',type:'mc',time:60,
-  q:'¿Qué describe mejor al auditor informático profesional?',
-  options:['Un «superinformático» que domina todas las tecnologías','Quien combina competencia técnica, metodología, comunicación y ética, y pide apoyo a especialistas cuando el alcance lo requiere','Un técnico brillante, aunque no documente su trabajo','Un experto en hacking ofensivo'],
-  correct:1,
-  why:'La competencia técnica es necesaria pero no suficiente. En trabajos reales puede haber un equipo con especialistas.'},
- {id:'q12',topic:'perfil',type:'tf',time:60,
-  q:'Si el alcance exige conocimientos que el auditor no posee, lo correcto es continuar solo y apoyarse en lo que sepa.',
-  options:['Verdadero','Falso'],
-  correct:1,
-  why:'Debe reconocer el límite de su competencia: pedir un especialista, capacitarse o limitar la tarea. Lo que no debe hacer es fingir competencia.'},
- {id:'q13',topic:'etica',type:'mc',time:60,
-  q:'El auditor asignado administró hasta hace dos semanas el sistema que debe auditar. ¿Qué amenaza existe y qué corresponde hacer?',
-  options:['Auto-revisión: declarar el conflicto y reasignar o aplicar salvaguardas','Ninguna: conoce mejor el sistema, así que audita mejor','Confidencialidad: debe dejar de acceder a los datos','Falta de competencia: debe estudiar más sobre el sistema'],
-  correct:0,
-  why:'Evaluar su propio trabajo reciente es una amenaza de auto-revisión a la independencia y la objetividad. Se declara y se gestiona; no se finge independencia.'},
- {id:'q14',topic:'etica',type:'mc',time:60,
-  q:'Un gerente pide quitar del informe un hallazgo crítico porque «ya se corregirá después». ¿Qué principio se compromete?',
-  options:['Integridad y presentación imparcial','Confidencialidad','Competencia','Debido cuidado profesional'],
-  correct:0,
-  why:'El informe debe reflejar lo que muestra la evidencia. Corregir después no borra el hecho observado: se mantiene el hallazgo sustentado y se escala según el proceso.'},
- {id:'q15',topic:'etica',type:'mc',time:60,
-  q:'Un auditor comenta datos salariales conocidos durante la revisión con compañeros no autorizados. ¿Qué principio viola?',
-  options:['Confidencialidad','Independencia','Competencia','Objetividad'],
-  correct:0,
-  why:'La información obtenida en la auditoría se protege y solo se comunica por canales autorizados.'}
+ {"topic": "caso", "type": "mc", "q": "HealthCare.gov se lanzó en 2013 pensado para ~50.000–60.000 usuarios y recibió hasta ~250.000 a la vez, y el sitio cayó. ¿Cuál es la lección principal?", "options": ["Los usuarios usaron mal el sitio", "Un requerimiento de carga que nadie validó ni probó es un riesgo del proyecto", "Bastaba con comprar más publicidad", "Los RNF no importan si los RF están completos"], "correct": 1, "why": "Un RNF de carga sin validar ni probar es un riesgo del proyecto. Las pruebas extremo a extremo incompletas agravaron el problema.", "id": "q1", "time": 60},
+ {"topic": "caso", "type": "tf", "q": "Sin criterios de aceptación medibles no se puede saber si un sistema está listo.", "options": ["Verdadero", "Falso"], "correct": 0, "why": "Un criterio medible permite comprobar si el requerimiento se cumplió; sin él, «listo» es solo una opinión.", "id": "q2", "time": 60},
+ {"topic": "conc", "type": "mc", "q": "«Quiero saber cuánto falta para que llegue mi pedido» (app de delivery). ¿Qué es?", "options": ["Un requerimiento no funcional", "Una regla de negocio", "Una necesidad", "Un criterio de aceptación"], "correct": 2, "why": "La necesidad es la mejora que espera el interesado, sin solución definida todavía.", "id": "q3", "time": 60},
+ {"topic": "conc", "type": "mc", "q": "«La app muestra al repartidor en un mapa en tiempo real». ¿Qué tipo de requerimiento es?", "options": ["Funcional (RF)", "No funcional (RNF)", "Regla de negocio", "Necesidad"], "correct": 0, "why": "Un RF describe un servicio que el sistema ofrece.", "id": "q4", "time": 60},
+ {"topic": "conc", "type": "mc", "q": "«El home banking exige doble factor para transferir». ¿Cómo se clasifica?", "options": ["Requerimiento funcional", "Necesidad", "Regla de negocio", "Requerimiento no funcional"], "correct": 3, "why": "Un RNF es una calidad o restricción al operar, como la seguridad, el rendimiento o la disponibilidad.", "id": "q5", "time": 60},
+ {"topic": "conc", "type": "mc", "q": "«Las transferencias tienen un límite diario por cuenta». ¿Qué es?", "options": ["Una regla de negocio", "Un RNF de rendimiento", "Una necesidad", "Una técnica de indagación"], "correct": 0, "why": "Una regla de negocio es una política de la organización que el sistema debe respetar.", "id": "q6", "time": 60},
+ {"topic": "conc", "type": "tf", "q": "Una necesidad ya incluye la solución tecnológica elegida.", "options": ["Verdadero", "Falso"], "correct": 1, "why": "La necesidad se expresa sin solución. Analizar «necesidad ≠ solución» es parte del procedimiento de relevamiento.", "id": "q7", "time": 60},
+ {"topic": "tec", "type": "mc", "q": "¿Qué técnica detecta pasos invisibles que las personas no mencionan, aunque puede cambiar su comportamiento?", "options": ["Cuestionario", "Observación", "Brainstorming", "Revisión de registros"], "correct": 1, "why": "La observación muestra la asignación diaria real del trabajo; su límite es que quien es observado puede actuar distinto.", "id": "q8", "time": 60},
+ {"topic": "tec", "type": "mc", "q": "Se quieren detectar patrones en las respuestas de muchos usuarios. ¿Qué técnica conviene?", "options": ["Entrevista a un solo experto", "Observación de un día", "Cuestionario", "JAD con tres personas"], "correct": 2, "why": "El cuestionario permite comparar muchas respuestas, aunque con poca profundidad y riesgo de ambigüedad.", "id": "q9", "time": 60},
+ {"topic": "tec", "type": "tf", "q": "El brainstorming sirve para verificar que las necesidades de los usuarios son reales.", "options": ["Verdadero", "Falso"], "correct": 1, "why": "El brainstorming genera muchas alternativas rápido, pero no verifica necesidades; hay que contrastarlas con evidencia.", "id": "q10", "time": 60},
+ {"topic": "tec", "type": "mc", "q": "Hay que acordar estados y reglas y resolver discrepancias entre varios roles clave. ¿Qué técnica encaja?", "options": ["Cuestionario", "Revisión de registros", "Observación", "JAD (sesión de trabajo conjunta)"], "correct": 3, "why": "JAD alinea y resuelve discrepancias, pero exige preparación y la presencia de roles clave.", "id": "q11", "time": 60},
+ {"topic": "red", "type": "mc", "q": "¿Cuál es una pregunta de entrevista neutral?", "options": ["«¿Verdad que necesitamos una aplicación móvil?»", "«¿No cree que la web sería mucho mejor?»", "«¿Desde qué dispositivos y lugares necesita trabajar?»", "«¿Está de acuerdo en que todo sea digital?»"], "correct": 2, "why": "Las preguntas neutrales son abiertas y no inducen la respuesta. Las otras sugieren la solución.", "id": "q12", "time": 60},
+ {"topic": "red", "type": "mc", "q": "«La página debe ser rápida» es una expresión vaga. ¿Cuál es una mejor formulación?", "options": ["La página debe ser muy veloz siempre", "La página debe cargar rápido en cualquier equipo", "En 4G, la pantalla principal carga en ≤ 2,5 s (LCP) en el 75 % de las mediciones", "La página no debe tardar mucho"], "correct": 2, "why": "Un requerimiento bien formulado indica condición, métrica y umbral, y se puede probar (por ejemplo con Lighthouse).", "id": "q13", "time": 60},
+ {"topic": "red", "type": "mc", "q": "¿Qué pregunta de validación comprueba si se puede decir con certeza que el requerimiento está «cumplido»?", "options": ["Correctitud", "Verificabilidad", "Consistencia", "Viabilidad"], "correct": 1, "why": "La verificabilidad pregunta si existe una prueba para comprobar el cumplimiento.", "id": "q14", "time": 60},
+ {"topic": "red", "type": "tf", "q": "Una frase vaga del usuario se debe convertir directamente en una funcionalidad.", "options": ["Verdadero", "Falso"], "correct": 1, "why": "Primero se registra la fuente, se contrasta con evidencia y se acuerdan criterios de aceptación.", "id": "q15", "time": 60},
+ {"topic": "fact", "type": "mc", "q": "¿Qué analiza la factibilidad operativa?", "options": ["Si los beneficios justifican los costos", "Si se puede desarrollar con la tecnología disponible", "Si los actores usarán el sistema en el trabajo real", "Si el código tiene errores"], "correct": 2, "why": "La operativa pregunta si las personas lo usarán en su trabajo real. La técnica mira lo desarrollable y la económica, costos y beneficios.", "id": "q16", "time": 60},
+ {"topic": "fact", "type": "mc", "q": "En el caso, 80 solicitudes por semana × 12 minutos cada una, durante 52 semanas, ¿cuántas horas al año son?", "options": ["416 h/año", "832 h/año", "960 h/año", "1.664 h/año"], "correct": 1, "why": "80 × 12 ÷ 60 = 16 h por semana; 16 × 52 = 832 h/año.", "id": "q17", "time": 60},
+ {"topic": "fact", "type": "mc", "q": "Con un neto de ~G. 10.347.200 al año y una inversión inicial de G. 6.000.000, ¿cuál es el payback aproximado?", "options": ["≈ 7 meses (0,58 años)", "≈ 2 años", "≈ 1 mes", "≈ 12 meses"], "correct": 0, "why": "Payback = 6.000.000 ÷ 10.347.200 ≈ 0,58 años, unos 7 meses. Siempre deben mostrarse los supuestos.", "id": "q18", "time": 60}
 ];
 
-/* =====================================================
-   POST-TEST: conceptos de la clase 02 (presentación unificada
-   con casos documentados). Mismos temas base para comparar
-   con el pre-test + temas nuevos de la clase.
-   ===================================================== */
-var QUESTIONS_POST=[
- {id:'p1',topic:'obj',type:'mc',time:45,
-  q:'¿Qué diferencia a la auditoría informática del soporte TI y del hacking ético?',
-  options:['La auditoría corrige incidentes y mantiene los servicios','La auditoría evalúa controles, riesgos y evidencia en un alcance aprobado; el hacking ético puede aportar evidencia','Son lo mismo con distinto nombre','El hacking ético reemplaza a la auditoría cuando hay poco tiempo'],
-  correct:1,
-  why:'Soporte corrige y mantiene; el hacking ético son pruebas técnicas autorizadas. La auditoría interpreta esa evidencia contra criterios y reporta.'},
- {id:'p2',topic:'clasif',type:'mc',time:45,
-  q:'Un equipo externo revisa solo los roles de PostgreSQL para verificar una resolución. ¿Qué clasificación responde a la pregunta «¿CUÁNTO abarca?»',
-  options:['Externa','De cumplimiento','De bases de datos','Focalizada'],
-  correct:3,
-  why:'Quién → externa; para qué → cumplimiento; qué → bases de datos; cuánto → focalizada (vs. integral). Las cuatro dimensiones conviven.'},
- {id:'p3',topic:'obj',type:'mc',time:45,
-  q:'Según el procedimiento profesional, ¿con qué comienza una auditoría?',
-  options:['Ejecutando Nmap sobre toda la red','Planificando: objetivo, alcance, criterios y equipo','Redactando el informe preliminar','Pidiendo la contraseña de administrador'],
-  correct:1,
-  why:'Una auditoría no comienza ejecutando Nmap: comienza definiendo el riesgo. Planificar → autorizar → relevar → verificar → documentar → informar → dar seguimiento.'},
- {id:'p4',topic:'campos',type:'mc',time:45,
-  q:'Los dispositivos de la red de invitados alcanzan servicios de la red interna. ¿Qué recomendación corresponde?',
-  options:['Segmentación (VLAN), reglas de acceso (ACL) y validación periódica','Cambiar la contraseña del Wi-Fi una vez al año','Hacer más respaldos diarios','Desinstalar el antivirus de los invitados'],
-  correct:0,
-  why:'Riesgo: exposición de activos y movimiento lateral. Evidencia: VLAN, ACL, diagrama y pruebas autorizadas. Recomendación: segmentar y validar.'},
- {id:'p5',topic:'campos',type:'mc',time:45,
-  q:'Un empleado dejó la empresa y su cuenta del ERP sigue activa. ¿Qué evidencia es la más adecuada?',
-  options:['Un escaneo de puertos con Nmap','Nómina de RR.HH. + cuentas habilitadas + registros de inicio de sesión','Un traceroute al servidor del ERP','Una consulta whois del dominio'],
-  correct:1,
-  why:'Se concilia RR.HH. con TI y se revisan los accesos. Recomendación: baja oportuna, conciliación RR.HH.–TI y revisión periódica de cuentas.'},
- {id:'p6',topic:'campos',type:'tf',time:30,
-  q:'Si el sistema informa copias de respaldo diarias exitosas, el control de continuidad está verificado.',
-  options:['Verdadero','Falso'],
-  correct:1,
-  why:'Hay que comprobar la recuperación, no solo la existencia: se piden resultados de restauraciones de prueba, responsables y objetivos de recuperación.'},
- {id:'p7',topic:'herr',type:'mc',time:45,
-  q:'En la red aprobada, ¿qué herramienta usarías para identificar servicios y versiones expuestos en un host?',
-  options:['ping','whois','nmap -sV','traceroute'],
-  correct:2,
-  why:'Nmap es un escáner de hosts, puertos y servicios; -sV detecta versiones. ping comprueba conectividad, traceroute muestra saltos y whois consulta registros.'},
- {id:'p8',topic:'herr',type:'mc',time:45,
-  q:'¿Para qué sirve Lynis en una auditoría?',
-  options:['Revisar la configuración y el endurecimiento de sistemas Unix/Linux','Capturar paquetes de red en un archivo PCAP','Consultar datos registrales de un dominio','Administrar usuarios de PostgreSQL'],
-  correct:0,
-  why:'«sudo lynis audit system» genera un reporte local de verificaciones y advertencias de configuración. Para tráfico se usa Wireshark/TShark; para PostgreSQL, psql.'},
- {id:'p9',topic:'hallazgo',type:'tf',time:30,
-  q:'Si Nmap muestra «22/tcp open ssh», eso ya es una vulnerabilidad confirmada.',
-  options:['Verdadero','Falso'],
-  correct:1,
-  why:'Puerto abierto ≠ vulnerabilidad. Se compara servicio, necesidad del negocio, configuración, exposición y controles antes de concluir.'},
- {id:'p10',topic:'hallazgo',type:'mc',time:45,
-  q:'«Dos operadores utilizan la misma cuenta genérica.» En el modelo de hallazgo, esto es la…',
-  options:['Recomendación','Criterio','Condición','Seguimiento'],
-  correct:2,
-  why:'Condición = lo que se observó. Criterio = lo que debería ser (operaciones atribuibles a un usuario). Luego evidencia, riesgo, recomendación y seguimiento.'},
- {id:'p11',topic:'autor',type:'mc',time:45,
-  q:'Antes de ejecutar pruebas técnicas, ¿qué es indispensable?',
-  options:['Un permiso verbal del administrador de turno','Tener credenciales de administrador','Autorización escrita del responsable legítimo, con alcance, pruebas, ventana y contactos','Avisar por correo al terminar las pruebas'],
-  correct:2,
-  why:'No basta con credenciales, conocimientos técnicos ni permiso verbal: la autorización debe ser escrita y provenir de quien tiene facultades para concederla.'},
- {id:'p12',topic:'autor',type:'mc',time:45,
-  q:'¿Qué documento define las pruebas permitidas y prohibidas, los límites de tráfico, el escalamiento y la parada segura?',
-  options:['Acta de cierre','Reglas de compromiso (RoE)','Acuerdo de confidencialidad','Orden de servicio'],
-  correct:1,
-  why:'Las RoE fijan cómo se ejecuta la prueba. El contrato fija responsables y entregables; la carta de autorización, quién autoriza qué activos y cuándo.'},
- {id:'p13',topic:'autor',type:'tf',time:30,
-  q:'En Paraguay, tener una cuenta de administrador permite auditar cualquier activo de la organización sin otra autorización.',
-  options:['Verdadero','Falso'],
-  correct:1,
-  why:'Art. 174 b del Código Penal (Ley 4439/2011): el acceso indebido incluye exceder una autorización. Actuar fuera del alcance puede implicar responsabilidad.'},
- {id:'p14',topic:'etica',type:'mc',time:45,
-  q:'Durante una prueba aparecen datos de pacientes inesperados y el servidor se degrada. ¿Qué corresponde?',
-  options:['Terminar rápido la prueba para no perder la ventana','Borrar los registros para que no quede rastro de la prueba','Copiar los datos como evidencia del hallazgo','Detener, registrar hora y acciones, avisar al contacto acordado y seguir el protocolo'],
-  correct:3,
-  why:'Preservar el entorno y escalar sin improvisar. Nunca modificar registros para ocultar la prueba; se reanuda solo si se autoriza.'},
- {id:'p15',topic:'etica',type:'mc',time:45,
-  q:'¿Cómo deben manejarse las evidencias que contienen datos personales?',
-  options:['Minimizar, anonimizar capturas, restringir acceso y acordar cifrado y retención','Extraer la base completa para analizarla con calma','Compartirlas en el grupo del equipo para agilizar','Conservarlas indefinidamente por si se necesitan'],
-  correct:0,
-  why:'Confidencialidad: evitar extracción masiva, usar datos sintéticos cuando sea viable y acordar almacenamiento, retención y eliminación.'},
- {id:'p16',topic:'perfil',type:'mc',time:45,
-  q:'Un auditor competente, cuando el alcance supera sus conocimientos…',
-  options:['Continúa igual para no retrasar el trabajo','Lo declara antes de iniciar y solicita apoyo o limita la tarea','Copia un informe de otra auditoría','Ejecuta todas las herramientas disponibles por las dudas'],
-  correct:1,
-  why:'Perfil = capacidad técnica + metodología + comprensión del negocio + comunicación. Competencia también es saber cuándo detenerse o pedir apoyo.'},
- {id:'p17',topic:'casos',type:'mc',time:45,
-  q:'Hack the Pentagon (2016) es un ejemplo de…',
-  options:['Un ataque criminal contra el Departamento de Defensa','Un pentest sin autorización que terminó en juicio','Un programa de hacking ético autorizado, con alcance definido y divulgación coordinada','Una fuga de datos por un error de software'],
-  correct:2,
-  why:'Se probaron cinco sitios web públicos (las redes críticas quedaron fuera), con HackerOne gestionando reportes: 138 vulnerabilidades válidas, luego corregidas.'},
- {id:'p18',topic:'casos',type:'mc',time:45,
-  q:'Heartbleed (CVE-2014-0160): ¿por qué no basta con mirar la etiqueta de versión de OpenSSL?',
-  options:['Porque algunas distribuciones retroportan parches: hay que revisar paquetes y boletines','Porque Heartbleed no afecta a OpenSSL','Porque basta con reiniciar el servidor','Porque «openssl version» nunca muestra la versión real'],
-  correct:0,
-  why:'La comprobación defensiva combina versión, gestor de paquetes y boletín de seguridad. Luego: actualizar, revisar certificados/credenciales y verificar la corrección.'},
- {id:'p19',topic:'casos',type:'mc',time:45,
-  q:'En Cloudbleed (2017), ¿qué hizo el investigador al detectar datos filtrados en respuestas HTTP?',
-  options:['Publicó los tokens encontrados para demostrar el fallo','Lo reportó en privado a Cloudflare, que mitigó y limpió cachés','Vendió la información a terceros','Ignoró el problema por no estar contratado'],
-  correct:1,
-  why:'Reporte privado → investigación → desactivar funciones afectadas → limpiar cachés → informe público. Nunca conservar ni difundir cookies o tokens ajenos.'},
- {id:'p20',topic:'hallazgo',type:'mc',time:45,
-  q:'¿De qué depende la gravedad de un hallazgo?',
-  options:['De la herramienta con la que se detectó','De la cantidad de líneas del reporte','Del contexto, la exposición, los controles compensatorios y el impacto','De la antigüedad del sistema'],
-  correct:2,
-  why:'La gravedad se establece por contexto, exposición, controles compensatorios e impacto: no solo por la herramienta utilizada.'}
-];
-
-window.__u={shapeSVG:shapeSVG,esc:esc,setBg:setBg};window.__Q=QUESTIONS;window.__QP=QUESTIONS_POST;window.__T=TOPICS;window.__TC=TOPIC_COL;window.__home=showHome;
+window.__u={shapeSVG:shapeSVG,esc:esc,setBg:setBg};window.__Q=QUESTIONS;window.__home=showHome;
 /* =====================================================
    Utilidades
    ===================================================== */
@@ -412,7 +227,7 @@ function sty(q,di){return q.type==='tf'?(di===0?1:0):di;} // V/F: Verdadero=azul
 function setBg(k){document.body.setAttribute('data-bg',k||'');}
 
 /* ---------- almacenamiento (con respaldo en memoria) ---------- */
-var KEY='aud_clase2_quiz_v1';
+var KEY='fep58_clase3_quiz_v1';
 var DB={};
 try{DB=JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){DB={};}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){}}
@@ -463,16 +278,18 @@ function showHome(){
        '<span style="background:var(--yellow)">'+shapeSVG(2)+'</span>'+
        '<span style="background:var(--green)">'+shapeSVG(3)+'</span>'+
      '</div>'+
-     '<h1>Quizz Test</h1>'+
+     '<p class="kicker">Ingeniería en Informática · 5.º año</p>'+
+     '<h1>Indagación de requerimientos</h1>'+
+     '<p class="sub">Formulación y Evaluación de Proyectos · Unidad II · Clase 3</p>'+
    '</header>'+
    '<section class="card name-card">'+
      '<label for="name">Tu apodo para el podio</label>'+
-     '<input id="name" maxlength="24" placeholder="Ej.: AuditorX" autocomplete="nickname">'+
+     '<input id="name" maxlength="24" placeholder="Ej.: Analista1" autocomplete="nickname">'+
      '<p class="hint" id="hint"></p>'+
    '</section>'+
    '<section class="modes">'+
      '<button class="mode pre" data-mode="pre" type="button"><span class="tag">Antes de la clase</span><strong>Pre-test</strong>'+
-       '<span class="desc">Diagnóstico inicial de '+n+' preguntas (incluye: ¿puede un hacker ser auditor?) (máx. '+totalMinutes()+' min). Por defecto no se revelan las respuestas correctas.</span>'+statusChip(DB.pre)+'</button>'+
+       '<span class="desc">Diagnóstico inicial de '+n+' preguntas (máx. '+totalMinutes()+' min). Por defecto no se revelan las respuestas correctas.</span>'+statusChip(DB.pre)+'</button>'+
      '<button class="mode post" data-mode="post" type="button"><span class="tag">Al terminar la clase</span><strong>Post-test</strong>'+
        '<span class="desc">Las mismas preguntas, en otro orden. Verás cada respuesta con su explicación y compararás con tu pre-test.</span>'+statusChip(DB.post)+'</button>'+
      '<button class="mode proj" data-mode="proj" type="button"><span class="tag">Para el docente</span><strong>Modo proyector</strong>'+
@@ -481,12 +298,13 @@ function showHome(){
    '<section class="card settings"><b>Sesión en vivo</b>'+
      '<input id="liveC" inputmode="numeric" maxlength="5" placeholder="Código de 5 dígitos" style="width:100%;border:3px solid var(--line);border-radius:10px;padding:10px;font:inherit;font-size:20px;background:transparent;color:var(--ink)">'+
      '<button class="btn btn-primary" id="liveJ" type="button" style="background:var(--violet);color:#fff">Unirme con código</button>'+
-     '<button class="btn" id="liveT" type="button" style="background:var(--ink);color:var(--card)">🔒 Entrar como usuario: crear sesión (QR + código)</button></section>'+
-   '<section class="card settings" style="display:none">'+
+     '<button class="btn-link" id="liveT" type="button" style="color:var(--ink)">🔒 Acceso docente: crear sesión (QR + código)</button></section>'+
+   '<section class="card settings">'+
      '<label class="switch"><span>Mostrar respuestas correctas también en el pre-test</span><input type="checkbox" id="revealPre"></label>'+
      '<label class="switch"><span>Efectos de sonido</span><input type="checkbox" id="snd"></label>'+
    '</section>'+
-   '<div class="foot"><button class="btn-link" id="reset" type="button" style="display:none">Borrar mis resultados</button></div>';
+   '<div class="foot">Puntaje por precisión y rapidez, con bonus por racha 🔥<br>Teclas 1–4 para responder · Tus resultados se guardan solo en este dispositivo'+
+     '<br><button class="btn-link" id="reset" type="button">Borrar mis resultados</button></div>';
 
   $('#name').value=DB.name||'';if(window.__live)window.__live.bind();
   $('#revealPre').checked=!!DB.settings.reveal;
@@ -669,7 +487,7 @@ function summaryText(){
   var parts=[DB.name||'Estudiante'];
   if(DB.pre)parts.push('Pre: '+DB.pre.correct+'/'+DB.pre.total+' ('+DB.pre.pts+' pts)');
   if(DB.post)parts.push('Post: '+DB.post.correct+'/'+DB.post.total+' ('+DB.post.pts+' pts)');
-  return 'Auditoría Informática · Clase 2 — '+parts.join(' · ');
+  return 'FEP58 · Clase 3 — '+parts.join(' · ');
 }
 
 function showResults(mode){
@@ -3077,413 +2895,112 @@ window.qrcode=window.qrcode||qrcode;</script><script>(()=>{function e(e,t,n,r){O
 </script>
 <script>
 (function(){
-'use strict';
-var U=window.__u,QA=window.__Q,QP=window.__QP||QA,T=window.__T||{},TC=window.__TC||{},Q=QA,app=document.getElementById('app');
-var SAVE='audq_results_v1';
-/* Acceso docente: usuario + hash SHA-256 de la contraseña */
-var USER='usuario',PASS='ea39cf7b097e35b1961b587df2826d9cd0ed863c3d94a8c540464cd4850491e4';
-var INP='width:100%;border:3px solid var(--line);border-radius:10px;padding:10px;font:inherit;background:transparent;color:var(--ink)';
-var room=null,code='',host=false,me='',myPid='',dl=0,mine=null,t0=0,tk=null;
-var st={ph:'lobby',i:0,dur:20,mode:'pre'};
-var names={},pts={},ans={},online={},peer2pid={},hist={},stk={};
-try{myPid=localStorage.getItem('audq_pid')||'';if(!myPid){myPid=Math.random().toString(36).slice(2,12);localStorage.setItem('audq_pid',myPid)}}catch(e){myPid=Math.random().toString(36).slice(2,12)}
-
+var U=window.__u,Q=window.__Q,app=document.getElementById('app'),room=null,code='',host=false,me='';
+var st={ph:'lobby',i:0,dur:20,mode:'pre',top:[]},names={},pts={},ans={},mine=null,t0=0,tk=null,sc={},myPeer='';
 function $(s){return document.querySelector(s)}
 function esc(s){return U.esc(s)}
 function sty(q,k){return q.type==='tf'?(k===0?1:0):k}
-function cnt(o){return Object.keys(o).length}
-function baseUrl(){return location.href.split('#')[0]}
-function qr(u){try{var q=qrcode(0,'M');q.addData(String(u||baseUrl()).split('#')[0]+'#code='+code);q.make();return q.createSvgTag({cellSize:4,margin:2,scalable:true})}catch(e){return ''}}
-function msg(t,retry){
-  U.setBg('');
-  app.innerHTML='<div class="center"><p style="font-size:22px;max-width:560px">'+t+'</p><div class="actions">'+(retry?'<button class="btn btn-primary" id="rc">Reconectar</button>':'')+'<button class="btn btn-dark" id="lb">Volver al inicio</button></div></div>';
-  $('#lb').onclick=function(){leave();window.__home()};
-  if(retry)$('#rc').onclick=retry;
-}
-function leave(){
-  clearInterval(tk);var r=room;room=null;
-  if(r){if(host)r.emit('bye',{});setTimeout(function(){r.leave()},host?400:0)}
-  host=false;st={ph:'lobby',i:0,dur:20,mode:'pre'};names={};pts={};ans={};online={};peer2pid={};hist={};stk={};mine=null;
-  window.onbeforeunload=null;
-}
-
-/* ---------- conexión (PeerJS: el docente es el servidor de la sala) ---------- */
-function conn(c,asHost){
+function qr(u){try{var q=qrcode(0,'M');q.addData(u.split('#')[0]+'#code='+code);q.make();return q.createSvgTag({cellSize:4,margin:2,scalable:true})}catch(e){return ''}}
+function msg(t,back){U.setBg('');app.innerHTML='<div class="center"><p style="font-size:22px;max-width:560px">'+t+'</p><button class="btn btn-primary" id="lb">Volver</button></div>';$('#lb').onclick=function(){leave();window.__home()};}
+function leave(){clearInterval(tk);if(room&&room.leave)try{room.leave()}catch(e){}room=null;host=false;st={ph:'lobby',i:0,dur:20,mode:'pre',top:[]};names={};pts={};ans={};mine=null;sc={};}
+async function conn(c,asHost){
   var P=window.Peer||(window.peerjs&&window.peerjs.Peer);
-  if(!P){msg('No se pudo cargar la conexión en vivo.');return Promise.resolve(false)}
+  if(!P){msg('No se pudo cargar la conexión en vivo.');return false}
   return new Promise(function(res){
-    var H={},cs={},pr,done=false,R;
+    var H={},cs={},pr,done=false;
     function fin(v){if(!done){done=true;res(v)}}
-    function fail(t){if(done)return;room=null;try{pr.destroy()}catch(e){}if(t)msg(t);fin(t?false:'retry')}
     function disp(p,m){if(m&&H[m.t])H[m.t]({peer:p,data:m.d})}
-    R={
-      emit:function(t,d){var m={t:t,d:d};if(asHost){Object.keys(cs).forEach(function(k){try{if(cs[k].open)cs[k].send(m)}catch(e){}})}else if(cs.h&&cs.h.open){try{cs.h.send(m)}catch(e){}}},
-      to:function(p,t,d){var x=cs[p];if(x&&x.open)try{x.send({t:t,d:d})}catch(e){}},
-      leave:function(){try{pr.destroy()}catch(e){}}
-    };
-    room=R;code=c;
+    room={emit:function(t,d){var m={t:t,d:d};if(asHost){Object.keys(cs).forEach(function(k){try{cs[k].send(m)}catch(e){}})}else if(cs.h&&cs.h.open){try{cs.h.send(m)}catch(e){}}},on:function(t,f){H[t]=f},leave:function(){try{pr.destroy()}catch(e){}}};
+    code=c;
     pr=asHost?new P('audq'+c):new P();
-    pr.on('error',function(er){
-      var ty=er&&er.type;
-      if(!done){
-        if(asHost&&ty==='unavailable-id')return fail('');
-        return fail(ty==='peer-unavailable'?'Código incorrecto o el docente aún no inició la sesión.':'No se pudo conectar ('+esc(ty||'error')+'). Revisa tu internet e intenta de nuevo.');
-      }
-      if(!asHost&&room===R&&ty!=='peer-unavailable')dropped();
-    });
+    pr.on('error',function(er){if(!done){msg(er.type==='peer-unavailable'?'Código incorrecto o el docente aún no inició la sesión.':'No se pudo conectar ('+esc(er.type||'error')+'). Revisa tu internet e intenta de nuevo.');fin(false)}});
     if(asHost){
       pr.on('open',function(){fin(true)});
-      pr.on('disconnected',function(){if(room===R)try{pr.reconnect()}catch(e){}});
-      pr.on('connection',function(cn){
-        cn.on('open',function(){cs[cn.peer]=cn});
-        cn.on('data',function(m){disp(cn.peer,m)});
-        cn.on('close',function(){delete cs[cn.peer];if(room===R)gone(cn.peer)});
-      });
+      pr.on('connection',function(cn){cn.on('open',function(){cs[cn.peer]=cn});cn.on('data',function(m){disp(cn.peer,m)});cn.on('close',function(){delete cs[cn.peer]})});
     }else{
-      pr.on('open',function(){
-        var cn=pr.connect('audq'+c,{reliable:true});cs.h=cn;
-        cn.on('open',function(){fin(true)});
-        cn.on('data',function(m){disp('h',m)});
-        cn.on('close',function(){if(room===R)dropped()});
-      });
+      pr.on('open',function(id){window.__me=id;var cn=pr.connect('audq'+c,{reliable:true});cs.h=cn;
+        cn.on('open',function(){fin(true)});cn.on('data',function(m){disp('h',m)});
+        cn.on('close',function(){if(room){msg('El docente cerró la sesión.')}})});
     }
-    setTimeout(function(){fail('Tiempo agotado al conectar. Verifica el código y tu internet.')},15000);
+    setTimeout(function(){if(!done){msg('Tiempo agotado al conectar. Verifica el código y tu internet.');fin(false)}},15000);
+    H.hello=H.hello;
+    H._wire=1;
     wire(H);
   });
 }
 function wire(H){
-  H.hello=function(m){
-    if(!host)return;
-    var d=m.data||{},pid=String(d.pid||m.peer).slice(0,20),n=String(d.n||'').trim().slice(0,24)||'Anónimo';
-    peer2pid[m.peer]=pid;online[pid]=m.peer;names[pid]=n;if(pts[pid]==null)pts[pid]=0;
-    var s=pub();s.my=ans[pid]?ans[pid].o:null;room.to(m.peer,'st',s);
-    if(st.ph==='lobby')players();else if(st.ph==='q')upd();
-  };
-  H.ans=function(m){
-    if(!host||st.ph!=='q')return;
-    var d=m.data||{},pid=peer2pid[m.peer],o=d.o|0;
-    if(!pid||d.i!==st.i||ans[pid]||o<0||o>=Q[st.i].options.length)return;
-    if(Date.now()-t0>st.dur*1000+2000)return;
-    ans[pid]={o:o,t:Math.min(Date.now(),t0+st.dur*1000)};upd();allIn();
-  };
-  H.st=function(m){
-    if(host)return;
-    var s=m.data||{};
-    if(s.ph==='lobby'||(s.ph==='q'&&(st.ph!=='q'||st.i!==s.i)))mine=null;
-    if(s.my!=null)mine=s.my;
-    if(s.ph==='q')dl=Date.now()+(s.left||0);
-    s.seen=1;st=s;setQ();draw();
-  };
-  H.bye=function(){
-    if(host)return;
-    var r=room;room=null;try{r&&r.leave()}catch(e){}clearInterval(tk);
-    if(st.ph!=='end')msg('El docente cerró la sesión.');
-  };
+  H.hello=function(m){if(!host)return;var n=String((m.data||{}).n||'').slice(0,24)||'Anónimo';names[m.peer]=n;if(pts[m.peer]==null)pts[m.peer]=0;send();draw()};
+  H.ans=function(m){var d=m.data||{};if(!host||st.ph!=='q'||d.i!==st.i||ans[m.peer])return;ans[m.peer]={o:d.o|0,t:Date.now()};draw()};
+  H.st=function(m){if(host)return;var o=st,s=m.data;s.seen=1;if(s.ph==='q'&&(o.ph!=='q'||o.i!==s.i)){mine=null;t0=Date.now()}st=s;if(s.ph==='r')st.rev=o.rev;draw()};
+  H.rev=function(m){if(host)return;sc=m.data.sc||{};st.rev=m.data;draw()};
 }
-function dropped(){
-  var r=room;room=null;try{r&&r.leave()}catch(e){}clearInterval(tk);
-  if(st.ph==='end')return;
-  var c=code,n=me;
-  msg('Se perdió la conexión con la sala. Si vuelves a entrar conservas tu puntaje.',function(){join(c,n)});
-}
-
+function send(){room&&room.emit('st',{ph:st.ph,i:st.i,dur:st.dur,mode:st.mode,top:st.top})}
 /* ---------- docente ---------- */
-function login(){
-  U.setBg('');
-  app.innerHTML='<div class="center"><h2 style="margin:0;font-size:30px">🔒 Acceso de usuario</h2><div class="card" style="width:min(380px,100%);display:grid;gap:10px;text-align:left">'+
-    '<label class="legend" for="lu">Usuario</label><input id="lu" autocomplete="username" style="'+INP+'">'+
-    '<label class="legend" for="lp">Contraseña</label><input id="lp" type="password" autocomplete="current-password" style="'+INP+'">'+
-    '<p class="hint" id="lh" style="color:var(--bad);margin:0;min-height:16px"></p><button class="btn" id="lg" style="background:var(--violet);color:#fff">Entrar</button></div>'+
-    '<button class="btn btn-dark" id="lb">Volver</button></div>';
+function login(){U.setBg('');app.innerHTML='<div class="center"><h2 style="margin:0;font-size:30px">🔒 Acceso docente</h2><div class="card" style="width:min(380px,100%);display:grid;gap:10px;text-align:left"><label class="legend" for="lu">Usuario</label><input id="lu" autocomplete="username" style="border:3px solid var(--line);border-radius:10px;padding:10px;font:inherit;background:transparent;color:var(--ink)"><label class="legend" for="lp">Contraseña</label><input id="lp" type="password" autocomplete="current-password" style="border:3px solid var(--line);border-radius:10px;padding:10px;font:inherit;background:transparent;color:var(--ink)"><p class="hint" id="lh" style="color:var(--bad);margin:0;min-height:16px"></p><button class="btn" id="lg" style="background:var(--violet);color:#fff">Entrar</button></div><button class="btn btn-dark" id="lb">Volver</button></div>';
   $('#lb').onclick=function(){window.__home()};
-  var enter=async function(){
-    var h=$('#lh');
-    if(!(window.crypto&&crypto.subtle)){h.textContent='Abre la página desde https para usar el acceso de usuario.';return}
-    var u=$('#lu').value.trim().toLowerCase(),buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode($('#lp').value));
-    var hx=Array.prototype.map.call(new Uint8Array(buf),function(b){return ('0'+b.toString(16)).slice(-2)}).join('');
-    if(u===USER&&hx===PASS){h.textContent='';teacher()}else h.textContent='Usuario o contraseña incorrectos.';
-  };
-  $('#lg').onclick=enter;
-  $('#lp').onkeydown=$('#lu').onkeydown=function(e){if(e.key==='Enter')enter()};
-  $('#lu').focus();
-}
-async function teacher(){
-  app.innerHTML='<div class="center"><p style="font-size:22px">Creando sala…</p></div>';
-  for(var k=0;k<4;k++){
-    var c=String(Math.floor(10000+Math.random()*90000)),r=await conn(c,true);
-    if(r===true){
-      host=true;st={ph:'lobby',i:0,dur:20,mode:'pre'};
-      window.onbeforeunload=function(e){e.preventDefault();e.returnValue='';return ''};
-      draw();return;
-    }
-    if(r!=='retry')return;
-  }
-  msg('No se pudo crear la sala. Intenta de nuevo.');
-}
-function pub(){return {ph:st.ph,i:st.i,mode:st.mode,left:st.ph==='q'?Math.max(0,st.dur*1000-(Date.now()-t0)):0,rev:st.ph==='r'?st.rev:null,fin:st.ph==='end'?st.fin:null}}
-function send(){if(room)room.emit('st',pub())}
-function rank(){return Object.keys(names).sort(function(a,b){return (pts[b]||0)-(pts[a]||0)})}
-function board(n){return rank().slice(0,n).map(function(p){return [names[p],pts[p]||0]})}
-function lines(a){return a.map(function(r,i){return '<div class="trow"><div class="tl"><span>'+(i+1)+'. '+esc(r[0])+'</span><span>'+r[1]+' pts</span></div></div>'}).join('')||'<p class="legend">Sin participantes.</p>'}
-function podium(a){
-  var h=[170,125,95],ord=[1,0,2],med=['🥇','🥈','🥉'];
-  return '<div class="podium">'+ord.filter(function(k){return a[k]}).map(function(k){return '<div class="pod" style="height:'+h[k]+'px"><div style="font-size:30px">'+med[k]+'</div><b>'+esc(a[k][0])+'</b><small>'+a[k][1]+' pts</small></div>'}).join('')+'</div>';
-}
-function players(){
-  var e=$('#plist');if(!e){draw();return}
-  var on=Object.keys(online);
-  $('#pcount').textContent=on.length;
-  e.innerHTML=on.map(function(p){return '<span class="chip">'+esc(names[p])+'</span>'}).join('')||'<p class="legend">Esperando estudiantes…</p>';
-}
-function upd(){var e=$('#acnt');if(e)e.textContent='Respuestas: '+cnt(ans)+' / '+cnt(online)}
-function allIn(){if(st.ph==='q'&&cnt(online)>0&&Object.keys(online).every(function(p){return ans[p]}))setTimeout(reveal,600)}
-function gone(peer){
-  var pid=peer2pid[peer];
-  if(!pid||online[pid]!==peer)return;
-  delete online[pid];
-  if(st.ph==='lobby')players();else if(st.ph==='q'){upd();allIn()}
-}
+  $('#lg').onclick=function(){if($('#lu').value.trim().toLowerCase()==='docente'&&$('#lp').value==='Auditoria2026')teacher();else $('#lh').textContent='Usuario o contraseña incorrectos.'};}
+async function teacher(){var c=String(Math.floor(10000+Math.random()*90000));if(!await conn(c,true))return;host=true;st.ph='lobby';draw();}
+function board(n){var a=Object.keys(pts).map(function(p){return [names[p]||'?',pts[p]]}).sort(function(x,y){return y[1]-x[1]});return a.slice(0,n)}
+function lines(a){return a.map(function(r,i){return '<div class="trow"><div class="tl"><span>'+(i+1)+'. '+esc(r[0])+'</span><span>'+r[1]+' pts</span></div></div>'}).join('')||'<p class="legend">Sin participantes aún.</p>'}
 function hostDraw(){
-  var q=Q[st.i];U.setBg('');
+  var q=Q[st.i],n=Object.keys(names).length;U.setBg('');
   if(st.ph==='lobby'){
-    app.innerHTML='<div class="res"><h2>Quizz Test · Sesión en vivo</h2>'+
-      '<div class="card" style="text-align:center"><p class="legend" style="margin:0">Entra en <b>'+esc(baseUrl())+'</b> y escribe el código</p>'+
-      '<div style="font-size:clamp(48px,14vw,96px);font-weight:900;letter-spacing:.12em">'+code+'</div>'+
-      '<div id="qrb" style="width:min(220px,60vw);margin:8px auto;background:#fff;border-radius:10px;padding:6px">'+qr()+'</div>'+
-      '<p class="legend">O escanea el QR para entrar directo.</p>'+
-      '<details style="text-align:left"><summary class="legend">Cambiar el enlace del QR</summary><input id="url" style="'+INP+'" value="'+esc(baseUrl())+'"></details></div>'+
-      '<div class="card"><h3>Jugadores conectados: <span id="pcount">0</span></h3><div class="chips" id="plist"></div></div>'+
-      '<div class="actions"><button class="btn btn-primary" id="gp">▶ Iniciar pre-test ('+QA.length+')</button><button class="btn btn-primary" id="gq">▶ Iniciar post-test ('+QP.length+')</button><button class="btn btn-dark" id="lb">Cerrar sesión</button></div>'+
-      '<div class="card"><h3>Resultados guardados en este navegador</h3>'+saved()+'</div></div>';
+    app.innerHTML='<div class="res"><h2>Sesión en vivo · Docente</h2><div class="card" style="text-align:center"><p class="legend">Código de conexión</p><div style="font-size:clamp(48px,14vw,96px);font-weight:900;letter-spacing:.12em">'+code+'</div>'+
+    '<div id="qrb" style="width:220px;margin:8px auto;background:#fff;border-radius:10px;padding:6px">'+qr(location.href)+'</div>'+
+    '<label class="legend" for="url">Enlace que abre el QR (pega aquí el enlace compartido si es distinto)</label><input id="url" style="width:100%;border:3px solid var(--line);border-radius:10px;padding:8px;background:transparent;color:var(--ink);font:inherit" value="'+esc(location.href)+'"></div>'+
+    '<div class="card"><h3>Conectados: '+n+'</h3>'+'<p>'+(Object.keys(names).map(function(p){return esc(names[p])}).join(' · ')||'Esperando estudiantes…')+'</p>'+'</div>'+
+    '<div class="actions"><button class="btn btn-primary" id="gp">Iniciar pre-test</button><button class="btn btn-primary" id="gq">Iniciar post-test</button><button class="btn btn-dark" id="lb">Cerrar sesión</button></div></div>';
     $('#url').oninput=function(e){$('#qrb').innerHTML=qr(e.target.value)};
-    bindSaved();
-    $('#gp').onclick=function(){start('pre')};$('#gq').onclick=function(){start('post')};
-    players();
+    $('#gp').onclick=function(){go('pre')};$('#gq').onclick=function(){go('post')};
   }else if(st.ph==='q'||st.ph==='r'){
-    var rv=st.ph==='r',R=st.rev||{};
-    app.innerHTML='<div class="qscreen"><div class="topbar"><span class="pill">'+(st.mode==='pre'?'Pre-test':'Post-test')+' · Pregunta '+(st.i+1)+' / '+Q.length+'</span><span class="pill">Código '+code+'</span>'+(rv?'':'<span class="pill" id="acnt"></span>')+'</div>'+
-      '<div class="qrow">'+(rv?'':'<div class="clock" id="clk"></div>')+'<div class="qbox">'+esc(q.q)+'</div></div>'+
-      '<div class="opts '+(q.type==='tf'?'tf':'')+'">'+q.options.map(function(t,k){return '<div class="opt c'+sty(q,k)+(rv?(k===q.correct?' correct':' dim'):'')+'">'+U.shapeSVG(sty(q,k))+'<span>'+esc(t)+(rv?' · '+(R.cnt?R.cnt[k]:0):'')+'</span></div>'}).join('')+'</div>'+
-      (rv?'<div class="why"><b>Explicación:</b> '+esc(q.why)+'</div><div class="card"><h3>Ranking</h3>'+lines(board(5))+'</div>':'')+
-      '<div class="proj-bar"><button class="btn btn-dark" id="lb">Cerrar sesión</button><button class="btn btn-primary" id="nx">'+(rv?(st.i+1<Q.length?'Siguiente →':'Ver podio 🏆'):'Revelar respuesta')+'</button></div></div>';
-    $('#nx').onclick=function(){rv?next():reveal()};
-    if(!rv){upd();tick()}
+    var cnt=[0,0,0,0];Object.keys(ans).forEach(function(p){cnt[ans[p].o]++});
+    app.innerHTML='<div class="qscreen"><div class="topbar"><span class="pill">Pregunta '+(st.i+1)+' / '+Q.length+'</span><span class="pill">Código '+code+'</span><span class="pill" id="clk"></span><span class="pill">Respuestas: '+Object.keys(ans).length+' / '+n+'</span></div>'+
+    '<div class="qbox">'+esc(q.q)+'</div><div class="opts '+(q.type==='tf'?'tf':'')+'">'+q.options.map(function(t,k){return '<div class="opt c'+sty(q,k)+(st.ph==='r'?(k===q.correct?' correct':' dim'):'')+'">'+U.shapeSVG(sty(q,k))+'<span>'+esc(t)+(st.ph==='r'?' · '+cnt[k]:'')+'</span></div>'}).join('')+'</div>'+
+    (st.ph==='r'?'<div class="why"><b>Explicación:</b> '+esc(q.why)+'</div><div class="card"><h3>Ranking</h3>'+lines(board(5))+'</div>':'')+
+    '<div class="proj-bar"><button class="btn btn-dark" id="lb">Cerrar</button><button class="btn btn-primary" id="nx">'+(st.ph==='q'?'Revelar respuesta':(st.i+1<Q.length?'Siguiente →':'Ver podio'))+'</button></div></div>';
+    $('#nx').onclick=function(){st.ph==='q'?reveal():next()};tick();
   }else{
-    var b=board(999);
-    app.innerHTML='<div class="res"><h2>🏆 Podio</h2>'+podium(b)+'<div class="card"><h3>Clasificación ('+b.length+')</h3>'+lines(b)+'</div>'+
-      '<div class="actions"><button class="btn btn-primary" id="csv">⬇ Descargar resultados (Excel)</button><button class="btn btn-primary" id="cmp">📊 Comparar pre / post</button><button class="btn btn-primary" id="nr">Nueva ronda</button><button class="btn btn-dark" id="lb">Cerrar sesión</button></div></div>';
-    $('#csv').onclick=csv;
-    $('#cmp').onclick=function(){compare(draw)};
-    $('#nr').onclick=function(){st.ph='lobby';ans={};send();draw()};
-  }
-  var lb=$('#lb');if(lb)lb.onclick=function(){if(st.ph==='lobby'||confirm('¿Cerrar la sesión para todos los estudiantes?')){leave();window.__home()}};
-}
-function setQ(){Q=st.mode==='post'?QP:QA}
-function loadR(){try{return JSON.parse(localStorage.getItem(SAVE)||'{}')||{}}catch(e){return {}}}
-function fdate(d){try{return new Date(d).toLocaleString('es-PY',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}catch(e){return ''}}
-function pc(c,t){return t?Math.round(c/t*100):0}
-function saveRound(){
-  var R=loadR(),pl={};
-  Object.keys(names).forEach(function(p){
-    var h=hist[p]||[],c=0,bt={};
-    Q.forEach(function(q,j){var x=h[j],b=bt[q.topic]=bt[q.topic]||[0,0];b[1]++;if(x&&x.ok===1){c++;b[0]++}});
-    pl[p]={n:names[p],pts:pts[p]||0,c:c,t:Q.length,bt:bt,h:Q.map(function(q,j){var x=h[j];return x&&x.o!=null?x.o:null})};
-  });
-  R[st.mode]={d:new Date().toISOString(),pl:pl};
-  try{localStorage.setItem(SAVE,JSON.stringify(R))}catch(e){}
-  return R;
-}
-function norm(s){return String(s||'').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
-/* Une pre y post por dispositivo (pid) y, si no coincide, por apodo */
-function pairs(R){
-  var A=(R.pre||{}).pl||{},B=(R.post||{}).pl||{},used={},rows=[],byName={};
-  Object.keys(A).forEach(function(p){byName[norm(A[p].n)]=byName[norm(A[p].n)]||p});
-  Object.keys(B).forEach(function(p){
-    var a=A[p]&&!used[p]?p:null;
-    if(!a){var k=byName[norm(B[p].n)];if(k&&!used[k]&&!B[k])a=k}
-    if(a)used[a]=1;
-    rows.push({pid:p,n:B[p].n,pre:a?A[a]:null,post:B[p]});
-  });
-  Object.keys(A).forEach(function(p){if(!used[p])rows.push({pid:p,n:A[p].n,pre:A[p],post:null})});
-  return rows;
-}
-function avg(pl){var c=0,t=0;Object.keys(pl||{}).forEach(function(p){c+=pl[p].c;t+=pl[p].t});return t?pc(c,t):null}
-function tavg(pl,k){var c=0,t=0;Object.keys(pl||{}).forEach(function(p){var b=pl[p].bt[k];if(b){c+=b[0];t+=b[1]}});return t?pc(c,t):null}
-function compare(back){
-  var R=loadR(),A=(R.pre||{}).pl,B=(R.post||{}).pl,rows=pairs(R);
-  var a=avg(A),b=avg(B),both=rows.filter(function(r){return r.pre&&r.post});
-  var dif=a!=null&&b!=null?b-a:null;
-  var tile=function(l,v,cl){return '<div class="tile'+(cl?' '+cl:'')+'"><small>'+l+'</small><b>'+v+'</b></div>'};
-  var keys=Object.keys(T).filter(function(k){return tavg(A,k)!=null||tavg(B,k)!=null});
-  var bars=keys.map(function(k){
-    var x=tavg(A,k),y=tavg(B,k);
-    return '<div class="trow"><div class="tl"><span>'+esc(T[k])+'</span><span>'+(x==null?'nuevo':x+'%')+' → '+(y==null?'—':y+'%')+'</span></div>'+
-      '<div class="bar"><i class="ghost" style="width:'+(x||0)+'%"></i></div><div class="bar" style="margin-top:3px"><i style="width:'+(y||0)+'%;background:'+(TC[k]||'var(--violet)')+'"></i></div></div>';
-  }).join('');
-  rows.sort(function(r,s){return norm(r.n)<norm(s.n)?-1:1});
-  var tb=rows.map(function(r){
-    var x=r.pre?pc(r.pre.c,r.pre.t):null,y=r.post?pc(r.post.c,r.post.t):null,d=x!=null&&y!=null?y-x:null;
-    return '<tr><td>'+esc(r.n)+'</td><td>'+(x==null?'—':x+'%')+'</td><td>'+(y==null?'—':y+'%')+'</td><td style="color:'+(d==null?'inherit':d>=0?'var(--good)':'var(--bad)')+'">'+(d==null?'—':(d>0?'+':'')+d)+'</td></tr>';
-  }).join('');
-  U.setBg('');
-  app.innerHTML='<div class="res"><h2>📊 Pre-test vs Post-test</h2>'+
-    '<p class="lead">Pre: '+(R.pre?fdate(R.pre.d)+' · '+cnt(A)+' alumnos':'sin datos')+' · Post: '+(R.post?fdate(R.post.d)+' · '+cnt(B)+' alumnos':'sin datos')+'</p>'+
-    '<div class="tiles">'+tile('Promedio pre',a==null?'—':a+'%')+tile('Promedio post',b==null?'—':b+'%')+tile('Diferencia',dif==null?'—':(dif>0?'+':'')+dif+' pp',dif==null?'':dif>=0?'up':'down')+tile('Mejoraron',both.length?both.filter(function(r){return pc(r.post.c,r.post.t)>pc(r.pre.c,r.pre.t)}).length+' / '+both.length:'—')+'</div>'+
-    '<div class="card"><h3>Por tema (gris = pre · color = post)</h3>'+(bars||'<p class="legend">Sin datos.</p>')+'<p class="legend">«Nuevo» = conceptos que solo se evalúan en el post-test.</p></div>'+
-    '<div class="card"><h3>Por alumno</h3><div style="overflow-x:auto"><table class="cmp"><thead><tr><th>Alumno</th><th>Pre</th><th>Post</th><th>Δ pp</th></tr></thead><tbody>'+(tb||'<tr><td colspan="4">Sin datos.</td></tr>')+'</tbody></table></div>'+
-    '<p class="legend">Se emparejan por dispositivo y, si no coincide, por apodo. Pide que usen el mismo apodo en ambos tests.</p></div>'+
-    '<div class="actions"><button class="btn btn-primary" id="ccsv">⬇ Descargar comparación (Excel)</button><button class="btn btn-dark" id="cbk">← Volver</button></div></div>';
-  $('#ccsv').onclick=function(){
-    var out=[['Alumno','Pre %','Post %','Diferencia (pp)','Pre correctas','Post correctas','Pre puntos','Post puntos'].concat(keys.map(function(k){return T[k]+' pre %'}),keys.map(function(k){return T[k]+' post %'}))];
-    rows.forEach(function(r){
-      var x=r.pre?pc(r.pre.c,r.pre.t):'',y=r.post?pc(r.post.c,r.post.t):'';
-      out.push([r.n,x,y,x!==''&&y!==''?y-x:'',r.pre?r.pre.c+'/'+r.pre.t:'',r.post?r.post.c+'/'+r.post.t:'',r.pre?r.pre.pts:'',r.post?r.post.pts:''].concat(
-        keys.map(function(k){var v=r.pre&&r.pre.bt[k];return v?pc(v[0],v[1]):''}),
-        keys.map(function(k){var v=r.post&&r.post.bt[k];return v?pc(v[0],v[1]):''})));
-    });
-    out.push(['PROMEDIO CURSO',a==null?'':a,b==null?'':b,dif==null?'':dif,'','','',''].concat(keys.map(function(k){var v=tavg(A,k);return v==null?'':v}),keys.map(function(k){var v=tavg(B,k);return v==null?'':v})));
-    dl2(out,'comparacion-pre-post-'+new Date().toISOString().slice(0,10)+'.csv');
-  };
-  $('#cbk').onclick=back;
-}
-function dl2(rows,fn){
-  var txt='\ufeff'+rows.map(function(row){return row.map(function(v){v=String(v);if(/^[=+\-@]/.test(v)&&isNaN(+v))v="'"+v;return /[";\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}).join(';')}).join('\r\n');
-  var a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([txt],{type:'text/csv;charset=utf-8'}));
-  a.download=fn;document.body.appendChild(a);a.click();
-  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500);
-}
-function saved(){
-  var R=loadR(),f=function(k,l){return '<p style="margin:4px 0">'+l+': '+(R[k]?'<b>✓ '+fdate(R[k].d)+'</b> · '+cnt(R[k].pl)+' alumnos · promedio '+avg(R[k].pl)+'%':'<span class="legend">pendiente</span>')+'</p>'};
-  return f('pre','Pre-test')+f('post','Post-test')+
-    (R.pre||R.post?'<div class="actions" style="justify-content:flex-start;margin-top:8px"><button class="btn" id="cmp" style="background:var(--violet);color:#fff">📊 Comparar pre / post</button><button class="btn-link" id="clr" style="color:var(--muted)">Borrar resultados guardados</button></div>':'<p class="legend">Al terminar cada test, los resultados quedan guardados aquí para compararlos (aunque cierres la sesión).</p>');
-}
-function bindSaved(){
-  var c=$('#cmp'),x=$('#clr');
-  if(c)c.onclick=function(){compare(draw)};
-  if(x)x.onclick=function(){if(confirm('¿Borrar los resultados guardados de pre-test y post-test?')){try{localStorage.removeItem(SAVE)}catch(e){}draw()}};
-}
-function start(m){
-  var R=loadR();
-  if(R[m]&&!confirm('Ya hay un '+(m==='pre'?'pre-test':'post-test')+' guardado ('+fdate(R[m].d)+'). Al terminar esta ronda se reemplazará. ¿Continuar?'))return;
-  st.mode=m;setQ();st.i=0;pts={};ans={};hist={};stk={};
-  Object.keys(names).forEach(function(p){if(!online[p])delete names[p];else pts[p]=0});
-  nextQ();
-}
-function nextQ(){ans={};st.ph='q';st.dur=Q[st.i].time;t0=Date.now();send();draw()}
-function reveal(){
-  if(st.ph!=='q')return;
-  clearInterval(tk);
-  var q=Q[st.i],c=[0,0,0,0];
-  Object.keys(names).forEach(function(p){
-    var a=ans[p],g=0,ok=-1;
-    if(a){
-      c[a.o]++;ok=a.o===q.correct?1:0;
-      if(ok){stk[p]=(stk[p]||0)+1;g=Math.round(1000*(1-.5*Math.min(1,(a.t-t0)/(st.dur*1000))))+Math.min(500,100*(stk[p]-1))}else stk[p]=0;
-    }else stk[p]=0;
-    pts[p]=(pts[p]||0)+g;
-    (hist[p]=hist[p]||[])[st.i]={o:a?a.o:null,ok:ok,g:g};
-  });
-  var r=rank(),sc={};
-  r.forEach(function(p,k){var h=hist[p][st.i];sc[p]=[pts[p]||0,h.g,k+1,h.ok]});
-  st.rev={c:q.correct,cnt:c,sc:sc,n:r.length};st.ph='r';send();draw();
-}
-function next(){
-  if(st.ph!=='r')return;
-  if(st.i+1<Q.length){st.i++;nextQ();return}
-  var R=saveRound(),pv={};
-  pairs(R).forEach(function(x){if(x.post)pv[x.pid]=x.pre?pc(x.pre.c,x.pre.t):null});
-  var r=rank(),sc={};
-  r.forEach(function(p,k){var h=hist[p]||[],c=h.filter(function(x){return x&&x.ok===1}).length;sc[p]=[pts[p]||0,k+1,st.mode==='post'?pv[p]:null,pc(c,Q.length)]});
-  st.fin={top:board(5),sc:sc,n:r.length};st.ph='end';send();draw();
-}
-function csv(){
-  var r=rank(),rows=[['Puesto','Nombre','Puntaje','Correctas'].concat(Q.map(function(q,k){return 'P'+(k+1)}))];
-  r.forEach(function(p,k){
-    var h=hist[p]||[],c=0;
-    var cells=Q.map(function(q,j){var x=h[j];if(!x||x.o==null)return 'sin respuesta';if(x.ok)c++;return (x.ok?'OK ':'X ')+String.fromCharCode(65+x.o)});
-    rows.push([k+1,String(names[p]),pts[p]||0,c+'/'+Q.length].concat(cells));
-  });
-  dl2(rows,'resultados-'+st.mode+'-'+new Date().toISOString().slice(0,10)+'.csv');
-}
-function rem(){return host?st.dur*1000-(Date.now()-t0):dl-Date.now()}
-function tick(){
-  clearInterval(tk);
-  var f=function(){
-    var s=Math.max(0,Math.ceil(rem()/1000)),c=$('#clk');
-    if(c)c.textContent=s;
-    if(st.ph!=='q'){clearInterval(tk);return}
-    if(s<=0){clearInterval(tk);if(host)reveal();else if(mine==null)draw()}
-  };
-  f();tk=setInterval(f,250);
-}
-
-/* ---------- estudiante ---------- */
-async function join(c,n){
-  me=n;mine=null;host=false;st={ph:'lobby',i:0,dur:20,mode:'pre'};U.setBg('');
-  app.innerHTML='<div class="center"><p style="font-size:22px">Conectando a la sala '+esc(c)+'…</p></div>';
-  if(await conn(c,false)!==true)return;
-  var hi=function(){if(room)room.emit('hello',{n:n,pid:myPid})};
-  hi();
-  var iv=setInterval(function(){if(!room||st.seen)clearInterval(iv);else hi()},2500);
-  draw();
-}
-function stuDraw(){
-  var q=Q[st.i];U.setBg('');
-  if(st.ph==='lobby'){
-    app.innerHTML='<div class="center"><div class="fbicon">✓</div><h2 style="font-size:32px;margin:0">¡Estás dentro, '+esc(me)+'!</h2><p style="font-size:18px">Sala <b>'+code+'</b>. ¿Ves tu nombre en la pantalla?<br>Espera a que el docente inicie…</p><button class="btn btn-dark" id="lb">Salir</button></div>';
-  }else if(st.ph==='q'){
-    if(mine!=null||rem()<=0){
-      U.setBg('wait');
-      app.innerHTML='<div class="center"><div class="fbicon">'+(mine!=null?'⏳':'⌛')+'</div><p style="font-size:26px">'+(mine!=null?'Respuesta enviada. Espera al resto…':'¡Se acabó el tiempo!')+'</p>'+
-        (mine!=null?'<div class="opt c'+sty(q,mine)+'" style="max-width:420px;width:100%">'+U.shapeSVG(sty(q,mine))+'<span>'+esc(q.options[mine])+'</span></div>':'')+'</div>';
-      return;
-    }
-    app.innerHTML='<div class="qscreen"><div class="topbar"><span class="pill">Pregunta '+(st.i+1)+' / '+Q.length+'</span><span class="pill">'+esc(me)+'</span></div>'+
-      '<div class="qrow"><div class="clock" id="clk"></div><div class="qbox">'+esc(q.q)+'</div></div>'+
-      '<div class="opts '+(q.type==='tf'?'tf':'')+'">'+q.options.map(function(t,k){return '<button type="button" class="opt c'+sty(q,k)+'" data-o="'+k+'">'+U.shapeSVG(sty(q,k))+'<span>'+esc(t)+'</span></button>'}).join('')+'</div></div>';
-    Array.prototype.forEach.call(document.querySelectorAll('.opt'),function(b){b.onclick=function(){
-      if(mine!=null)return;
-      mine=+b.getAttribute('data-o');if(room)room.emit('ans',{i:st.i,o:mine});draw();
-    }});
-    tick();
-  }else if(st.ph==='r'){
-    var R=st.rev||{},s=(R.sc||{})[myPid],ok=s?s[3]:-1;
-    U.setBg(ok===1?'ok':'bad');
-    app.innerHTML='<div class="center fb"><div class="fbicon">'+(ok===1?'✓':'✗')+'</div><div class="fbhead">'+(ok===1?'¡Correcto!':ok===0?'Incorrecto':'Sin respuesta')+'</div>'+
-      (s&&s[1]?'<div class="fbpts">+'+s[1]+'</div>':'')+
-      '<div class="fbcorrect">Correcta: '+esc(q.options[q.correct])+'</div><div class="why"><b>Explicación:</b> '+esc(q.why)+'</div>'+
-      (s?'<div class="note">Total: <b>'+s[0]+' pts</b> · Puesto <b>'+s[2]+'</b> de '+R.n+'</div>':'')+'</div>';
-  }else{
-    var F=st.fin||{},m=(F.sc||{})[myPid];
-    app.innerHTML='<div class="res"><h2>🏆 Fin de la sesión</h2>'+
-      (m?'<div class="card" style="text-align:center"><p class="legend" style="margin:0">Tu resultado</p><div style="font-size:48px;font-weight:900">'+m[1]+'.º</div><p style="margin:0">'+m[0]+' pts · '+m[3]+'% de aciertos · '+F.n+' jugadores</p>'+
-        (m[2]!=null?'<p style="margin:10px 0 0;font-size:20px">Pre-test <b>'+m[2]+'%</b> → Post-test <b>'+m[3]+'%</b> <span style="color:'+(m[3]>=m[2]?'var(--good)':'var(--bad)')+'">('+(m[3]-m[2]>0?'+':'')+(m[3]-m[2])+' pp)</span></p>':'')+'</div>':'')+
-      podium(F.top||[])+'<div class="card"><h3>Top 5</h3>'+lines(F.top||[])+'</div><div class="actions"><button class="btn btn-primary" id="lb">Salir</button></div></div>';
+    app.innerHTML='<div class="res"><h2>🏆 Podio</h2><div class="card">'+lines(board(10))+'</div><div class="actions"><button class="btn btn-primary" id="lb">Cerrar sesión</button></div></div>';
   }
   var b=$('#lb');if(b)b.onclick=function(){leave();window.__home()};
 }
-function draw(){setQ();host?hostDraw():stuDraw()}
-
+function go(m){st.mode=m;st.i=0;pts={};Object.keys(names).forEach(function(p){pts[p]=0});nextQ()}
+function nextQ(){ans={};st.ph='q';st.dur=Q[st.i].time;t0=Date.now();send();draw()}
+function reveal(){var q=Q[st.i],sc2={};Object.keys(ans).forEach(function(p){if(ans[p].o===q.correct)pts[p]=(pts[p]||0)+Math.round(1000*(1-.5*Math.min(1,(ans[p].t-t0)/(st.dur*1000))))});
+  Object.keys(pts).slice(0,100).forEach(function(p){sc2[p]=pts[p]});st.ph='r';room.emit('st',{ph:'r',i:st.i,dur:st.dur,mode:st.mode,top:[]});room.emit('rev',{i:st.i,c:q.correct,sc:sc2});draw()}
+function next(){if(st.i+1<Q.length){st.i++;nextQ()}else{st.ph='end';st.top=board(5);send();draw()}}
+function tick(){clearInterval(tk);var el=function(){var c=$('#clk');if(!c)return;var s=Math.max(0,Math.ceil(st.dur-(Date.now()-t0)/1000));c.textContent='⏱ '+s+' s'};el();tk=setInterval(el,500)}
+/* ---------- estudiante ---------- */
+async function join(c,n){
+  if(!await conn(c,false))return;
+  room.emit('hello',{n:n});setTimeout(function(){if(st.ph==='lobby'&&!st.seen)draw()},0);draw();
+  var hi=setInterval(function(){if(!room||st.seen)clearInterval(hi);else room.emit('hello',{n:n})},3000);
+}
+function stuDraw(){
+  var q=Q[st.i];U.setBg('');
+  if(st.ph==='lobby'){app.innerHTML='<div class="center"><h2 style="font-size:32px;margin:0">¡Estás dentro, '+esc(me)+'!</h2><p>Sala <b>'+code+'</b>. Espera a que el docente inicie…</p><button class="btn btn-dark" id="lb">Salir</button></div>'}
+  else if(st.ph==='q'){
+    if(mine!=null){U.setBg('wait');app.innerHTML='<div class="center"><div class="fbicon">⏳</div><p style="font-size:26px">Respuesta enviada. Espera al resto…</p></div>';return}
+    app.innerHTML='<div class="qscreen"><div class="topbar"><span class="pill">Pregunta '+(st.i+1)+' / '+Q.length+'</span><span class="pill" id="clk"></span></div><div class="qbox">'+esc(q.q)+'</div><div class="opts '+(q.type==='tf'?'tf':'')+'">'+q.options.map(function(t,k){return '<button type="button" class="opt c'+sty(q,k)+'" data-o="'+k+'">'+U.shapeSVG(sty(q,k))+'<span>'+esc(t)+'</span></button>'}).join('')+'</div></div>';
+    Array.prototype.forEach.call(document.querySelectorAll('.opt'),function(b){b.onclick=function(){mine=+b.getAttribute('data-o');room.emit('ans',{i:st.i,o:mine});draw()}});tick();
+  }else if(st.ph==='r'){
+    var ok=mine===q.correct;U.setBg(ok?'ok':'bad');
+    app.innerHTML='<div class="center fb"><div class="fbicon">'+(ok?'✓':'✗')+'</div><div class="fbhead">'+(mine==null?'Sin respuesta':ok?'¡Correcto!':'Incorrecto')+'</div><div class="fbcorrect">Correcta: '+esc(q.options[q.correct])+'</div><div class="why"><b>Explicación:</b> '+esc(q.why)+'</div><div class="fbpts" id="mp"></div></div>';
+    var el=$('#mp');el.textContent='Esperando puntaje…';
+    var f=function(){var s=st.rev&&st.rev.sc;if(!s)return;var k=Object.keys(s).sort(function(a,b){return s[b]-s[a]});el.textContent='Total: '+(s[window.__me]!=null?s[window.__me]:'—')+' pts'};f();
+  }else{app.innerHTML='<div class="res"><h2>🏆 Fin de la sesión</h2><div class="card"><h3>Podio</h3>'+lines(st.top||[])+'</div><div class="actions"><button class="btn btn-primary" id="lb">Salir</button></div></div>'}
+  var b=$('#lb');if(b)b.onclick=function(){leave();window.__home()};
+}
+function draw(){host?hostDraw():stuDraw()}
 window.__live={bind:function(){
-  var t=$('#liveT'),j=$('#liveJ'),c=$('#liveC');
+  var t=$('#liveT'),j=$('#liveJ');
   if(t)t.onclick=login;
-  var go=function(){
-    var k=(c.value||'').replace(/\D/g,''),n=($('#name').value||'').trim(),h=$('#hint');
-    if(k.length!==5){h.textContent='Escribe el código de 5 dígitos.';c.focus();return}
-    if(!n){h.textContent='Escribe tu apodo primero.';$('#name').focus();return}
-    try{localStorage.setItem('audq_name',n)}catch(e){}
-    join(k,n);
-  };
-  if(j)j.onclick=go;
-  if(c)c.onkeydown=function(e){if(e.key==='Enter')go()};
-  var nm=$('#name');
-  if(nm&&!nm.value)try{nm.value=localStorage.getItem('audq_name')||''}catch(e){}
-  if(nm)nm.onkeydown=function(e){if(e.key==='Enter')go()};
-  var m=location.hash.match(/code=(\d{5})/);
-  if(m&&c){c.value=m[1];if(nm&&!nm.value)nm.focus()}
+  if(j)j.onclick=function(){var c=($('#liveC').value||'').replace(/\D/g,''),n=($('#name').value||'').trim();
+    if(c.length!==5){$('#hint').textContent='Escribe el código de 5 dígitos.';return}
+    if(!n){$('#hint').textContent='Escribe tu apodo primero.';$('#name').focus();return}
+    me=n;join(c,n)};
+  var m=location.hash.match(/code=(\d{5})/);if(m&&$('#liveC'))$('#liveC').value=m[1];
 }};
-window.__live.bind();
 })();
 </script>
 </body>
