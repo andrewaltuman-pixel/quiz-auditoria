@@ -4,7 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
-<title>Quiz · FEP58 · Clase 3 · Indagación de requerimientos</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>Quiz · FEP58 · Clase 4 · Modelos iniciales</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -2474,95 +2477,96 @@ window.qrcode=window.qrcode||qrcode;
 'use strict';
 
 var PUBLIC_URL='https://andrewaltuman-pixel.github.io/quiz-auditoria/';
-var ROOM='fepq',KEY='fep58_clase3_v2',USER='docente',PASS='Auditoria2026';
+var ROOM='fep4',KEY='fep58_clase4_v1',USER='docente',PASS='Proyectos2026';
+try{['fep58_clase3_v2','fep58_clase3_quiz_v1'].forEach(function(k){localStorage.removeItem(k)})}catch(e){}
 
 var TOPICS={
-  caso:'Caso HealthCare.gov',
-  conc:'Necesidad y requerimientos',
-  tec:'Técnicas de indagación',
-  red:'Redacción y validación',
-  fact:'Factibilidad'
+  dfd:'Reglas del DFD',
+  ctx:'Contexto y balanceo',
+  dic:'Diccionario de datos',
+  er:'Modelo ER',
+  bib:'Caso biblioteca'
 };
 
 /* Tipos: mc = opción múltiple · tf = verdadero/falso · num = respuesta numérica · open = redacción.
    En "open", cada elemento de groups es una expresión regular sobre el texto en minúsculas y sin tildes;
    el puntaje es la fracción de grupos presentes y se considera correcta desde "need". */
 var Q=[
- {id:'q1',topic:'caso',type:'mc',time:45,
-  q:'HealthCare.gov (2013) se diseñó para unos 50.000–60.000 usuarios simultáneos y recibió cerca de 250.000. El sitio cayó. Como analista, ¿qué falló primero?',
-  options:['Los usuarios usaron mal el sitio','Un requerimiento de carga que nadie validó ni probó','Faltó publicidad del lanzamiento','Los requerimientos funcionales estaban incompletos'],
-  correct:1,why:'Un requerimiento no funcional de carga sin validar ni probar es un riesgo del proyecto. Las pruebas de extremo a extremo incompletas agravaron el problema.'},
- {id:'q2',topic:'caso',type:'tf',time:45,
-  q:'Si un requerimiento no tiene un criterio de aceptación medible, no se puede afirmar con certeza que el sistema está «listo».',
-  options:['Verdadero','Falso'],correct:0,
-  why:'El criterio medible permite comprobar si el requerimiento se cumplió. Sin él, «listo» es solo una opinión.'},
- {id:'q3',topic:'conc',type:'mc',time:45,
-  q:'Un cliente de una app de delivery dice: «Quiero saber cuánto falta para que llegue mi pedido». ¿Qué tienes entre manos?',
-  options:['Un requerimiento no funcional','Una regla de negocio','Una necesidad','Un criterio de aceptación'],
-  correct:2,why:'Es una necesidad: la mejora que espera el interesado, todavía sin una solución definida.'},
- {id:'q4',topic:'conc',type:'mc',time:45,
-  q:'Clasifica: «El 95 % de las búsquedas de productos responde en menos de 2 segundos».',
-  options:['Requerimiento funcional','Requerimiento no funcional (rendimiento)','Regla de negocio','Necesidad'],
-  correct:1,why:'No describe un servicio nuevo sino una calidad medible de cómo opera el sistema: es un RNF de rendimiento.'},
- {id:'q5',topic:'conc',type:'mc',time:45,
-  q:'Clasifica: «Una cuenta no puede transferir más de G. 5.000.000 por día».',
-  options:['Requerimiento no funcional de seguridad','Regla de negocio','Requerimiento funcional','Necesidad'],
-  correct:1,why:'Es una política de la organización que el sistema debe respetar: una regla de negocio.'},
- {id:'q6',topic:'conc',type:'open',time:120,
-  q:'El encargado del depósito dice: «Necesito saber qué productos se están acabando». Redacta un requerimiento funcional.',
-  groups:['sistema|aplicacion|app|software|plataforma','debe|debera|permit|mostr|notific|alert|envi|gener|avis|list|inform','stock|existencia|inventario|producto|articulo|mercaderia','minimo|umbral|bajo|menos de|por debajo|limite|reorden|\\d'],
-  need:.5,model:'El sistema debe enviar una alerta al encargado cuando el stock de un producto baje del mínimo definido (por ejemplo, 10 unidades).',
-  why:'Un RF dice qué hace el sistema (verbo + objeto) y bajo qué condición. La necesidad del usuario se transforma en un servicio concreto y comprobable.'},
- {id:'q7',topic:'tec',type:'mc',time:45,
-  q:'En una biblioteca dicen que un préstamo tarda 2 minutos, pero siempre hay cola. ¿Qué técnica usas primero para ver qué pasa realmente?',
-  options:['Cuestionario a los bibliotecarios','Observación en el mostrador','Brainstorming con el equipo','Revisión del reglamento'],
-  correct:1,why:'La observación muestra los pasos reales que nadie menciona. Su límite: quien es observado puede actuar distinto.'},
- {id:'q8',topic:'tec',type:'mc',time:45,
-  q:'Quieres conocer la opinión de 300 estudiantes sobre los horarios de atención de la secretaría. ¿Qué técnica conviene?',
-  options:['Entrevista a cada estudiante','Observación durante una semana','Cuestionario','JAD con todos los estudiantes'],
-  correct:2,why:'El cuestionario permite comparar muchas respuestas a bajo costo, aunque con poca profundidad.'},
- {id:'q9',topic:'tec',type:'tf',time:45,
-  q:'El brainstorming sirve para verificar que las necesidades de los usuarios son reales.',
+ {id:'q1',topic:'dfd',type:'mc',time:45,
+  q:'En un DFD, una flecha denominada «Hacer clic en guardar» representa un flujo de datos adecuado. ¿Qué corresponde?',
+  options:['Es correcto: describe la acción del usuario','Es incorrecto: los flujos se nombran con sustantivos, no con acciones de interfaz','Es correcto si el botón existe en la pantalla','Es incorrecto porque los flujos no llevan nombre'],
+  correct:1,why:'Los flujos se nombran con sustantivos que describen la información que circula (por ejemplo, «Datos del formulario guardado»), no el gesto de la interfaz.'},
+ {id:'q2',topic:'ctx',type:'tf',time:45,
+  q:'El diagrama de contexto de la mesa de ayuda debe incluir, dentro del proceso global, todas las tablas de la base de datos.',
   options:['Verdadero','Falso'],correct:1,
-  why:'El brainstorming genera muchas ideas rápido, pero no verifica nada: hay que contrastar las ideas con evidencia.'},
- {id:'q10',topic:'tec',type:'mc',time:45,
-  q:'Ventas, Depósito y Contabilidad definen distinto cuándo un pedido está «entregado». ¿Qué técnica usas para acordarlo?',
-  options:['Cuestionario','Revisión de registros','Observación','JAD (sesión de trabajo conjunta)'],
-  correct:3,why:'JAD reúne a los roles clave para resolver discrepancias y acordar definiciones. Exige preparación y que todos estén presentes.'},
- {id:'q11',topic:'tec',type:'open',time:120,
-  q:'Escribe una pregunta de entrevista neutral para relevar cómo se aprueban hoy los pedidos de compra.',
-  groups:['como|que|cual|quien|cuando|describ|cuent|explic|paso|proceso','aprob|autoriz|firma|valid|visto bueno','pedido|compra|solicitud|orden'],
-  avoid:'verdad que|no cree|no le parece|esta de acuerdo|deberiamos|seria mejor|aplicacion|app |sistema nuevo|automatiz',
-  need:.67,model:'«¿Podría contarme, paso a paso, qué ocurre desde que alguien pide una compra hasta que queda aprobada?»',
-  why:'Una pregunta neutral es abierta, indaga el proceso actual y no sugiere la solución («¿no sería mejor una app?» induce la respuesta).'},
- {id:'q12',topic:'red',type:'mc',time:45,
-  q:'Te piden «la página debe ser rápida». ¿Cuál es la versión verificable?',
-  options:['La página debe ser muy veloz siempre','La página debe cargar rápido en cualquier equipo','En 4G, la pantalla principal carga en 2,5 s o menos en el 75 % de las mediciones','La página no debe tardar mucho'],
-  correct:2,why:'Un requerimiento bien formulado indica condición, métrica y umbral, y se puede probar (por ejemplo, con Lighthouse).'},
- {id:'q13',topic:'red',type:'open',time:120,
-  q:'Reescribe de forma medible: «El sistema debe ser fácil de usar».',
-  groups:['usuari|persona|cliente|operador|nuev|novat|empleado|funcionari','\\d','segundo|minuto|clic|paso|intento|%|por ciento|porcentaje|error','sin ayuda|sin capacitacion|primera vez|complet|realiz|registr|tarea|encontr|cargar'],
-  need:.5,model:'Un usuario nuevo, sin capacitación, completa el registro de un pedido en 3 minutos o menos en el 90 % de los intentos.',
-  why:'Un RNF medible indica quién, qué tarea, qué métrica y qué umbral. «Fácil» no se puede probar; «3 minutos en el 90 % de los intentos» sí.'},
- {id:'q14',topic:'red',type:'mc',time:45,
-  q:'¿Qué pregunta de validación comprueba si se puede decir con certeza que el requerimiento está «cumplido»?',
-  options:['Correctitud','Verificabilidad','Consistencia','Viabilidad'],
-  correct:1,why:'La verificabilidad pregunta si existe una prueba objetiva para comprobar el cumplimiento.'},
- {id:'q15',topic:'red',type:'open',time:120,
-  q:'Escribe un criterio de aceptación con el formato Dado / Cuando / Entonces para: «el cliente recupera su contraseña».',
-  groups:['dado','cuando','entonces','correo|email|e-mail|mail|enlace|link|codigo|sms|token'],
-  need:.75,model:'Dado un cliente registrado, cuando solicita recuperar la contraseña con su correo, entonces recibe un enlace válido por 30 minutos para crear una nueva.',
-  why:'Dado fija el contexto, Cuando la acción y Entonces el resultado observable. Así el criterio se convierte directamente en una prueba.'},
- {id:'q16',topic:'fact',type:'mc',time:45,
-  q:'El sistema es técnicamente posible y rentable, pero los vendedores dicen que no van a cargar los pedidos en el celular. ¿Qué factibilidad está en riesgo?',
-  options:['Económica','Técnica','Operativa','Legal'],
-  correct:2,why:'La factibilidad operativa pregunta si las personas usarán el sistema en su trabajo real.'},
- {id:'q17',topic:'fact',type:'num',time:75,unit:'h/año',answer:832,tol:0,
-  q:'Se atienden 80 solicitudes por semana, cada una lleva 12 minutos, durante 52 semanas. ¿Cuántas horas al año se dedican? Escribe solo el número.',
-  why:'80 × 12 = 960 min por semana = 16 h; 16 × 52 = 832 h/año.'},
- {id:'q18',topic:'fact',type:'num',time:75,unit:'meses',answer:7,tol:.5,
-  q:'La inversión inicial es de G. 6.000.000 y el ahorro neto es de G. 10.347.200 por año. ¿En cuántos meses se recupera la inversión (payback)? Redondea a meses enteros.',
-  why:'6.000.000 ÷ 10.347.200 ≈ 0,58 años; 0,58 × 12 ≈ 7 meses. Siempre se muestran los supuestos del cálculo.'}
+  why:'El contexto tiene un único proceso, entidades externas y flujos. Los almacenes aparecen a partir del nivel 1.'},
+ {id:'q3',topic:'dfd',type:'mc',time:45,
+  q:'La entidad externa «Solicitante» envía datos al almacén D1 Tickets sin pasar por un proceso. ¿Qué regla se viola?',
+  options:['Ninguna: un almacén puede recibir de una entidad','Flujo directo entidad–almacén (prohibido)','Balanceo de niveles','Cardinalidad 1:N'],
+  correct:1,why:'No hay flujos directos entre entidad externa y almacén, entre dos almacenes ni entre dos entidades. Siempre interviene un proceso.'},
+ {id:'q4',topic:'ctx',type:'tf',time:45,
+  q:'La salida «Código de ticket» existe en el contexto. Al descomponer el modelo en nivel 1, ese flujo debe reaparecer.',
+  options:['Verdadero','Falso'],correct:0,
+  why:'El balanceo exige que cada flujo externo del contexto reaparezca en el nivel 1, conectado a algún proceso.'},
+ {id:'q5',topic:'er',type:'mc',time:45,
+  q:'En el ER, id_tecnico de Ticket se definió como opcional. Un ticket sin técnico asignado:',
+  options:['Rompe el modelo y hay que borrarlo','Es compatible con la opcionalidad de la clave foránea','Obliga a convertir la relación en N:N','Impide definir una clave primaria'],
+  correct:1,why:'Si la FK es opcional, el ticket puede existir sin técnico. Incompatible sería si id_tecnico fuera obligatorio.'},
+ {id:'q6',topic:'dfd',type:'tf',time:45,
+  q:'En un DFD, un proceso puede generar un reporte sin recibir ni consultar ningún dato.',
+  options:['Verdadero','Falso'],correct:1,
+  why:'Cada proceso tiene al menos una entrada y una salida. Un reporte no «aparece»: sale de datos que el proceso recibió o consultó.'},
+ {id:'q7',topic:'dic',type:'tf',time:45,
+  q:'El atributo estado puede definirse en el diccionario con un conjunto cerrado de valores (por ejemplo: abierto, en curso, cerrado).',
+  options:['Verdadero','Falso'],correct:0,
+  why:'Eso es el dominio del campo: tipo más valores permitidos. El diccionario también indica si es obligatorio.'},
+ {id:'q8',topic:'er',type:'mc',time:45,
+  q:'Un usuario puede registrar varios tickets y cada ticket pertenece a un único solicitante. La relación es:',
+  options:['1:1','1:N','N:N','0:1'],
+  correct:1,why:'Un solicitante — varios tickets; cada ticket — un solo solicitante. Lectura en ambos sentidos: es 1:N.'},
+ {id:'q9',topic:'bib',type:'mc',time:45,
+  q:'En la biblioteca, el lector solicita un ejemplar, el bibliotecario autoriza o rechaza y la plataforma guarda el préstamo. ¿Quiénes son actores externos?',
+  options:['Lector y bibliotecario (la plataforma es el sistema)','Lector, bibliotecario y plataforma','Solo el lector','Las tablas Préstamo y Ejemplar'],
+  correct:0,why:'Los actores externos están fuera de la frontera. La plataforma es el sistema que se modela, no un actor.'},
+ {id:'q10',topic:'bib',type:'open',time:120,
+  q:'Nombra el flujo de datos que sale del lector hacia el sistema al pedir un ejemplar. Usa sustantivos, no acciones de pantalla.',
+  groups:['solicitud|pedido|datos|peticion|requerimiento|informacion','prestamo|ejemplar|libro|copia'],
+  avoid:'hacer clic|click|boton|ingresar a|loguear|abrir la app',
+  need:.5,model:'Solicitud de préstamo del ejemplar',
+  why:'Los flujos se nombran con sustantivos que describen la información, no el gesto («hacer clic en prestar»).'},
+ {id:'q11',topic:'ctx',type:'mc',time:45,
+  q:'El DFD de contexto «0 Gestionar préstamos» debe tener:',
+  options:['Varios procesos y los almacenes D1, D2 y D3','Un único proceso y ningún almacén','Un proceso por cada tabla de la base','Solo entidades externas, sin flujos'],
+  correct:1,why:'En contexto hay un proceso (el sistema visto como caja negra) y ningún almacén. Los almacenes aparecen en el nivel 1.'},
+ {id:'q12',topic:'dfd',type:'mc',time:45,
+  q:'¿Cuál es un nombre válido de proceso de nivel 1?',
+  options:['Préstamos','Tabla ejemplar','Verificar disponibilidad','Hacer clic en prestar'],
+  correct:2,why:'Los procesos se nombran con verbo + objeto. «Préstamos» es un sustantivo (más bien un almacén); el clic es interfaz, no proceso.'},
+ {id:'q13',topic:'ctx',type:'num',time:75,unit:'flujos',answer:8,tol:0,
+  q:'El contexto tiene 5 flujos de entrada y 3 de salida. ¿Cuántos flujos externos deben reaparecer en el nivel 1? Escribe solo el número.',
+  why:'Balanceo: 5 + 3 = 8. Todos los flujos externos del contexto reaparecen en el nivel 1, cada uno ligado a un proceso.'},
+ {id:'q14',topic:'dic',type:'open',time:120,
+  q:'Define un campo del diccionario de Préstamo: nombre, tipo o dominio, y una regla (obligatoriedad o valores permitidos).',
+  groups:['fecha|id_|estado|lector|ejemplar|devoluc|inicio|prestamo','fecha|entero|int|char|varchar|texto|enumer|dominio|date|number|boole','obligator|opcional|no nulo|not null|debe|no puede|valores|abierto|cerrado|pendiente'],
+  need:.67,model:'fecha_devolucion_prevista — fecha — obligatoria y posterior a fecha_inicio',
+  why:'Cada campo del diccionario tiene tipo/dominio y regla. Sin eso, el dato no se puede validar ni implementar.'},
+ {id:'q15',topic:'er',type:'mc',time:45,
+  q:'Un lector puede tener varios préstamos; cada préstamo pertenece a un único lector. Cardinalidad Lector–Préstamo:',
+  options:['1:1','1:N','N:N','1:0'],
+  correct:1,why:'Se lee en ambos sentidos: un lector puede tener 0..N préstamos; un préstamo pertenece a 1 lector.'},
+ {id:'q16',topic:'er',type:'open',time:120,
+  q:'Redacta la regla de negocio que impida dos préstamos abiertos del mismo ejemplar e indica en qué entidad o atributo se apoya.',
+  groups:['ejemplar|libro|copia','prestamo|abierto|activo|vigente|sin devolver','uno|unico|no puede|no debe|a la vez|simultan|mismo tiempo|mas de un','estado|prestamo|ejemplar'],
+  need:.5,model:'Un ejemplar no puede tener más de un préstamo con estado «abierto» a la vez. Se apoya en Préstamo.estado (o en una unicidad sobre ejemplar + estado abierto).',
+  why:'Es una regla de negocio, no una decisión de tecnología. El ER la sostiene con el atributo estado o una restricción de unicidad.'},
+ {id:'q17',topic:'er',type:'mc',time:45,
+  q:'¿En qué se diferencian el DFD y el diagrama ER?',
+  options:['El DFD modela procesos y flujos; el ER, entidades, claves y relaciones','Son el mismo diagrama con distinto nombre','El ER muestra actores externos; el DFD, claves primarias','El DFD reemplaza al diccionario de datos'],
+  correct:0,why:'El DFD responde qué transforma el sistema y qué datos circulan. El ER responde qué se guarda, con qué claves y con qué cardinalidad.'},
+ {id:'q18',topic:'bib',type:'mc',time:45,
+  q:'Cualquiera podría consultar préstamos ajenos. ¿Por qué el DFD no resuelve eso por sí solo?',
+  options:['Porque el DFD no documenta permisos ni controles de acceso; eso va en reglas, diccionario o especificación del proceso','Porque faltó dibujar más almacenes','Porque el contexto no admite entidades externas','Porque el ER no permite claves foráneas'],
+  correct:0,why:'El DFD muestra flujos, no quién puede ver qué. La seguridad se documenta como regla de negocio, dominio o especificación del proceso.'}
 ];
 
 var TYPE_LBL={mc:['list','Cerrada · opción múltiple'],tf:['list','Cerrada · verdadero o falso'],num:['hash','Abierta · numérica'],open:['edit','Abierta · redacción']};
@@ -2725,9 +2729,9 @@ function timeUp(){
 
 /* ---------- vistas comunes ---------- */
 function hero(){
-  return '<section class="term hero"><div class="term-bar"><span class="dots"><i></i><i></i><i></i></span><span>fep58@unidad-ii:~/clase-3</span></div>'+
-    '<div class="term-body"><p class="kicker">Ingeniería en Informática · 5.º año</p><h1>Indagación de requerimientos<span class="cursor"></span></h1>'+
-    '<p class="sub">Formulación y Evaluación de Proyectos · Unidad II · Clase 3</p></div></section>';
+  return '<section class="term hero"><div class="term-bar"><span class="dots"><i></i><i></i><i></i></span><span>fep58@unidad-iii:~/clase-4</span></div>'+
+    '<div class="term-body"><p class="kicker">Ingeniería en Informática · 5.º año</p><h1>Modelos iniciales<span class="cursor"></span></h1>'+
+    '<p class="sub">Formulación y Evaluación de Proyectos · Unidad III · Clase 4</p></div></section>';
 }
 function msg(title,text,retry){
   stopTick();view='msg';
@@ -2761,7 +2765,7 @@ function home(err){
   var m=location.hash.match(/code=(\d{5})/),c=m?m[1]:'';
   app.innerHTML=hero()+
    '<section class="card narrow"><h3>'+ic('terminal')+'Unirse a la sesión</h3>'+
-   '<div class="field"><label for="nm">Tu apodo</label><input class="input" id="nm" maxlength="24" autocomplete="nickname" placeholder="ej. analista_01" value="'+esc(store.name||'')+'"></div>'+
+   '<div class="field"><label for="nm">Tu apodo</label><input class="input" id="nm" maxlength="24" autocomplete="nickname" placeholder="ej. modelo_01" value="'+esc(store.name||'')+'"></div>'+
    '<div class="field"><label for="cd">Código de sala</label><input class="input code" id="cd" inputmode="numeric" maxlength="5" autocomplete="off" placeholder="00000" value="'+c+'"></div>'+
    '<button class="btn acc block" id="go" type="button">'+ic('arrow')+'Unirme</button><p class="hint" id="hint">'+esc(err||'')+'</p></section>'+
    '<div class="row center"><button class="link" id="tch" type="button">'+ic('lock')+'Acceso docente</button></div>'+
@@ -2962,7 +2966,7 @@ function dlResults(){
   pairRows().forEach(function(x){
     out.push([x.name,x.pre?x.pre.cor+'/'+n:'',x.pre?x.pre.pts:'',x.post?x.post.cor+'/'+n:'',x.post?x.post.pts:'',(x.pre&&x.post)?x.post.cor-x.pre.cor:'']);
   });
-  download('fep58_clase3_resultados.csv',out);
+  download('fep58_clase4_resultados.csv',out);
 }
 function dlAnswers(){
   var out=[['test','pregunta','tipo','apodo','respuesta','correcta','puntaje_%','puntos']];
@@ -2970,7 +2974,7 @@ function dlAnswers(){
     var R=store.res&&store.res[m];if(!R)return;
     R.log.forEach(function(x){var q=Q[x.i];out.push([modeName(m),(x.i+1)+'. '+q.q,TYPE_LBL[q.type][1],x.name,answerText(q,x.v),isOk(q,x.f)?'sí':'no',Math.round(x.f*100),x.g])});
   });
-  download('fep58_clase3_respuestas.csv',out);
+  download('fep58_clase4_respuestas.csv',out);
 }
 
 function answersHtml(q){
