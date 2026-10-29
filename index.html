@@ -2477,10 +2477,13 @@ window.qrcode=window.qrcode||qrcode;
 'use strict';
 
 var PUBLIC_URL='https://andrewaltuman-pixel.github.io/quiz-auditoria/';
-var ROOM='fep4',KEY='fep58_clase4_v1',USER='docente',PASS='Proyectos2026';
-try{['fep58_clase3_v2','fep58_clase3_quiz_v1'].forEach(function(k){localStorage.removeItem(k)})}catch(e){}
+var ROOM='fep4',KEY='fep58_clase4_v2',USER='docente',PASS='Proyectos2026';
+try{['fep58_clase3_v2','fep58_clase3_quiz_v1','fep58_clase4_v1'].forEach(function(k){localStorage.removeItem(k)})}catch(e){}
 
 var TOPICS={
+  sit:'Entrar en tema',
+  caso:'Caso biblioteca',
+  dato:'Datos y reglas',
   dfd:'Reglas del DFD',
   ctx:'Contexto y balanceo',
   dic:'Diccionario de datos',
@@ -2491,7 +2494,57 @@ var TOPICS={
 /* Tipos: mc = opción múltiple · tf = verdadero/falso · num = respuesta numérica · open = redacción.
    En "open", cada elemento de groups es una expresión regular sobre el texto en minúsculas y sin tildes;
    el puntaje es la fracción de grupos presentes y se considera correcta desde "need". */
-var Q=[
+var PRE=[
+ {id:'p1',topic:'sit',type:'mc',time:35,
+  q:'Hoy vamos a modelar un sistema. ¿Qué conviene delimitar primero?',
+  options:['Los colores de la pantalla','Qué queda dentro y qué queda fuera del sistema','El lenguaje de programación','El presupuesto en guaraníes'],
+  correct:1,why:'Antes de dibujar se fija la frontera: qué es el sistema y quiénes interactúan con él desde afuera.'},
+ {id:'p2',topic:'sit',type:'mc',time:35,
+  q:'En un sistema, entrada / proceso / salida significa:',
+  options:['Teclado, CPU y monitor','Información que llega, se transforma y sale','Requerimiento, código y prueba','Usuario, programador y cliente'],
+  correct:1,why:'Es el esquema de todo sistema: entra algo, se transforma, sale algo. Hoy lo vamos a dibujar.'},
+ {id:'p3',topic:'sit',type:'tf',time:30,
+  q:'Un actor externo es una persona, área u otro sistema que está fuera de la frontera, pero le entrega o recibe información.',
+  options:['Verdadero','Falso'],correct:0,
+  why:'Están fuera, pero conversan con el sistema. No son tablas ni pantallas.'},
+ {id:'p4',topic:'caso',type:'mc',time:40,
+  q:'Biblioteca: un lector pide un libro, el bibliotecario acepta o rechaza y el software registra el préstamo. ¿Quién está fuera del sistema?',
+  options:['Las tablas de la base de datos','El lector y el bibliotecario','El registro de préstamos','La función «guardar»'],
+  correct:1,why:'El software es el sistema. El lector y el bibliotecario lo usan desde afuera.'},
+ {id:'p5',topic:'caso',type:'mc',time:40,
+  q:'Cuando el lector pide un libro, ¿qué viaja hacia el sistema?',
+  options:['El clic en un botón','Los datos de la solicitud: quién pide y qué ejemplar','El escritorio de la biblioteca','El reglamento impreso'],
+  correct:1,why:'Para el análisis importa la información que circula, no el gesto de la pantalla.'},
+ {id:'p6',topic:'caso',type:'tf',time:30,
+  q:'Si dos personas se llevan el mismo ejemplar al mismo tiempo, hay un problema de negocio, no solo de «dibujar bonito».',
+  options:['Verdadero','Falso'],correct:0,
+  why:'Hay una regla: un ejemplar no puede estar prestado dos veces a la vez. Hoy van a ver dónde se documenta.'},
+ {id:'p7',topic:'dato',type:'mc',time:35,
+  q:'«El préstamo debe recordar fecha de inicio y de devolución». Eso se parece más a:',
+  options:['Un color de botón','Un dato que el sistema tiene que conservar','Una opinión del lector','Un requerimiento de velocidad'],
+  correct:1,why:'Son datos que persisten. Más adelante van al diccionario y al modelo de datos.'},
+ {id:'p8',topic:'sit',type:'mc',time:35,
+  q:'Un requerimiento funcional dice, en esencia:',
+  options:['Qué hace el sistema','De qué color es la pantalla','Cuánto cuesta el servidor','Si el proyecto es rentable'],
+  correct:0,why:'RF = servicio o comportamiento. Hoy pasan de «qué debe hacer» a cómo se modela ese qué.'},
+ {id:'p9',topic:'sit',type:'tf',time:30,
+  q:'Para modelar cómo se presta un libro hoy alcanza con imaginarlo: no hace falta preguntar a nadie.',
+  options:['Verdadero','Falso'],correct:1,
+  why:'El modelo se apoya en lo relevado (entrevista, observación, registros), no en suposiciones.'},
+ {id:'p10',topic:'caso',type:'mc',time:40,
+  q:'El bibliotecario consulta si el ejemplar está disponible y después autoriza o rechaza. Entre «consultar» y «guardar el préstamo» hace falta:',
+  options:['Nada: la base se actualiza sola','Una transformación que use esos datos y produzca una decisión','Un diagrama de Gantt','Comprar más computadoras'],
+  correct:1,why:'Los datos no saltan solos del mostrador a la tabla: hay un proceso que los transforma.'},
+ {id:'p11',topic:'dato',type:'mc',time:35,
+  q:'Si el estado de un préstamo solo puede ser «abierto» o «devuelto», eso es:',
+  options:['Un adorno de la pantalla','Un conjunto limitado de valores que el dato puede tomar','Una clave foránea','Un actor externo'],
+  correct:1,why:'Intuición de dominio: el dato no admite cualquier texto. Hoy lo van a escribir en el diccionario.'},
+ {id:'p12',topic:'sit',type:'mc',time:35,
+  q:'¿Para qué sirve un modelo al inicio del análisis?',
+  options:['Para programar ya en Java','Para ponernos de acuerdo, con dibujos y definiciones, sobre qué hace el sistema y qué datos maneja','Para reemplazar a los usuarios','Para calcular el payback'],
+  correct:1,why:'DFD, diccionario y ER son un lenguaje compartido. Todavía no son el código.'}
+];
+var POST=[
  {id:'q1',topic:'dfd',type:'mc',time:45,
   q:'En un DFD, una flecha denominada «Hacer clic en guardar» representa un flujo de datos adecuado. ¿Qué corresponde?',
   options:['Es correcto: describe la acción del usuario','Es incorrecto: los flujos se nombran con sustantivos, no con acciones de interfaz','Es correcto si el botón existe en la pantalla','Es incorrecto porque los flujos no llevan nombre'],
@@ -2568,6 +2621,10 @@ var Q=[
   options:['Porque el DFD no documenta permisos ni controles de acceso; eso va en reglas, diccionario o especificación del proceso','Porque faltó dibujar más almacenes','Porque el contexto no admite entidades externas','Porque el ER no permite claves foráneas'],
   correct:0,why:'El DFD muestra flujos, no quién puede ver qué. La seguridad se documenta como regla de negocio, dominio o especificación del proceso.'}
 ];
+var Q=PRE;
+function bank(m){return (m||st.mode)==='post'?POST:PRE}
+function setQ(){Q=bank()}
+function modeN(m){var R=store.res&&store.res[m];return (R&&R.n)||bank(m).length}
 
 var TYPE_LBL={mc:['list','Cerrada · opción múltiple'],tf:['list','Cerrada · verdadero o falso'],num:['hash','Abierta · numérica'],open:['edit','Abierta · redacción']};
 var LETTERS='ABCD';
@@ -2769,7 +2826,7 @@ function home(err){
    '<div class="field"><label for="cd">Código de sala</label><input class="input code" id="cd" inputmode="numeric" maxlength="5" autocomplete="off" placeholder="00000" value="'+c+'"></div>'+
    '<button class="btn acc block" id="go" type="button">'+ic('arrow')+'Unirme</button><p class="hint" id="hint">'+esc(err||'')+'</p></section>'+
    '<div class="row center"><button class="link" id="tch" type="button">'+ic('lock')+'Acceso docente</button></div>'+
-   '<p class="foot">// '+Q.length+' preguntas cerradas y abiertas · el puntaje premia la precisión y la rapidez</p>';
+   '<p class="foot">// pre: '+PRE.length+' cerradas para entrar en tema · post: '+POST.length+' con reglas y redacción</p>';
   var nm=$('#nm'),cd=$('#cd');
   cd.oninput=function(){cd.value=cd.value.replace(/\D/g,'').slice(0,5)};
   nm.onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();if(cd.value.length===5)$('#go').click();else cd.focus()}};
@@ -2878,7 +2935,7 @@ function go(mode){
   var R=store.res||{};
   if(R[mode]&&!confirm('Ya hay un '+modeName(mode).toLowerCase()+' guardado en este dispositivo. ¿Reemplazarlo?'))return;
   if(mode==='post'&&!R.pre&&!confirm('Todavía no hay un pre-test guardado. ¿Iniciar el post-test igual?'))return;
-  st.mode=mode;st.i=0;log=[];lastFin=null;
+  st.mode=mode;setQ();st.i=0;log=[];lastFin=null;
   Object.keys(names).forEach(function(p){pts[p]=0;cor[p]=0});
   startQ();
 }
@@ -2925,7 +2982,7 @@ function findRow(rows,pid,name){
 function finish(){
   var r=rankPids(),rows=r.map(function(p,k){return {pid:p,name:names[p],pts:pts[p]||0,cor:cor[p]||0,rank:k+1}});
   store.res=store.res||{};
-  store.res[st.mode]={at:Date.now(),rows:rows,log:log.map(function(x){return {i:x.i,pid:x.pid,name:names[x.pid],v:x.v,f:x.f,g:x.g}})};
+  store.res[st.mode]={at:Date.now(),n:Q.length,rows:rows,log:log.map(function(x){return {i:x.i,pid:x.pid,name:names[x.pid],v:x.v,f:x.f,g:x.g}})};
   save();
   var sc={},cmp=null;
   rows.forEach(function(x){sc[x.pid]=[x.pts,x.rank,x.cor]});
@@ -2948,23 +3005,23 @@ function pairRows(){
   });
   return out;
 }
-function avgPct(rows,m){var a=rows.filter(function(x){return x[m]});return a.length?Math.round(a.reduce(function(s,x){return s+x[m].cor},0)/(a.length*Q.length)*100):0}
+function avgPct(rows,m){var a=rows.filter(function(x){return x[m]});var n=modeN(m);return a.length?Math.round(a.reduce(function(s,x){return s+x[m].cor},0)/(a.length*n)*100):0}
 function compareHtml(){
   var R=store.res||{};if(!R.pre||!R.post)return '';
-  var n=Q.length,rows=pairRows(),both=rows.filter(function(x){return x.pre&&x.post}).length,pa=avgPct(rows,'pre'),po=avgPct(rows,'post'),d=po-pa;
+  var nPre=modeN('pre'),nPost=modeN('post'),rows=pairRows(),both=rows.filter(function(x){return x.pre&&x.post}).length,pa=avgPct(rows,'pre'),po=avgPct(rows,'post'),d=po-pa;
   rows.sort(function(a,b){return ((b.post&&b.post.cor)||0)-((a.post&&a.post.cor)||0)});
   return '<section class="card"><h3>'+ic('chart')+'Pre-test vs post-test</h3><div class="tiles">'+
     '<div class="tile"><small>Pre · aciertos</small><b>'+pa+'%</b></div><div class="tile"><small>Post · aciertos</small><b>'+po+'%</b></div>'+
     '<div class="tile"><small>Cambio</small><b class="'+(d>0?'up':d<0?'down':'')+'">'+(d>0?'+':'')+d+' pp</b></div><div class="tile"><small>Hicieron ambos</small><b>'+both+'</b></div></div>'+
     '<div style="overflow:auto;margin-top:14px"><table class="tbl"><thead><tr><th>Apodo</th><th class="num">Pre</th><th class="num">Post</th><th class="num">Cambio</th></tr></thead><tbody>'+
     rows.map(function(x){var a=x.pre?x.pre.cor:null,b=x.post?x.post.cor:null,dd=(a!=null&&b!=null)?b-a:null;
-      return '<tr><td>'+esc(x.name)+'</td><td class="num">'+(a==null?'—':a+'/'+n)+'</td><td class="num">'+(b==null?'—':b+'/'+n)+'</td><td class="num '+(dd>0?'up':dd<0?'down':'')+'">'+(dd==null?'—':(dd>0?'+':'')+dd)+'</td></tr>'}).join('')+
+      return '<tr><td>'+esc(x.name)+'</td><td class="num">'+(a==null?'—':a+'/'+nPre)+'</td><td class="num">'+(b==null?'—':b+'/'+nPost)+'</td><td class="num '+(dd>0?'up':dd<0?'down':'')+'">'+(dd==null?'—':(dd>0?'+':'')+dd)+'</td></tr>'}).join('')+
     '</tbody></table></div></section>';
 }
 function dlResults(){
-  var n=Q.length,out=[['apodo','pre_aciertos','pre_puntos','post_aciertos','post_puntos','mejora_aciertos']];
+  var nPre=modeN('pre'),nPost=modeN('post'),out=[['apodo','pre_aciertos','pre_puntos','post_aciertos','post_puntos','mejora_aciertos']];
   pairRows().forEach(function(x){
-    out.push([x.name,x.pre?x.pre.cor+'/'+n:'',x.pre?x.pre.pts:'',x.post?x.post.cor+'/'+n:'',x.post?x.post.pts:'',(x.pre&&x.post)?x.post.cor-x.pre.cor:'']);
+    out.push([x.name,x.pre?x.pre.cor+'/'+nPre:'',x.pre?x.pre.pts:'',x.post?x.post.cor+'/'+nPost:'',x.post?x.post.pts:'',(x.pre&&x.post)?x.post.cor-x.pre.cor:'']);
   });
   download('fep58_clase4_resultados.csv',out);
 }
@@ -2972,7 +3029,8 @@ function dlAnswers(){
   var out=[['test','pregunta','tipo','apodo','respuesta','correcta','puntaje_%','puntos']];
   ['pre','post'].forEach(function(m){
     var R=store.res&&store.res[m];if(!R)return;
-    R.log.forEach(function(x){var q=Q[x.i];out.push([modeName(m),(x.i+1)+'. '+q.q,TYPE_LBL[q.type][1],x.name,answerText(q,x.v),isOk(q,x.f)?'sí':'no',Math.round(x.f*100),x.g])});
+    var B=bank(m);
+    R.log.forEach(function(x){var q=B[x.i];if(!q)return;out.push([modeName(m),(x.i+1)+'. '+q.q,TYPE_LBL[q.type][1],x.name,answerText(q,x.v),isOk(q,x.f)?'sí':'no',Math.round(x.f*100),x.g])});
   });
   download('fep58_clase4_respuestas.csv',out);
 }
@@ -2998,7 +3056,7 @@ function hostDraw(){
       '<section class="card"><h3>'+ic('users')+'Conectados: <span id="pcount">'+onlineCount()+'</span></h3><div class="chips" id="players">'+playersHtml()+'</div>'+
       '<div class="row" style="margin-top:18px"><button class="btn acc" id="gp" type="button"'+(net==='ok'?'':' disabled')+'>'+ic('play')+'Iniciar pre-test</button>'+
       '<button class="btn dark" id="gq" type="button"'+(net==='ok'?'':' disabled')+'>'+ic('play')+'Iniciar post-test</button></div>'+
-      '<p class="small muted" style="margin-top:12px">'+Q.length+' preguntas: '+Q.filter(function(x){return x.type==='mc'||x.type==='tf'}).length+' cerradas y '+Q.filter(function(x){return x.type==='num'||x.type==='open'}).length+' abiertas.</p>'+
+      '<p class="small muted" style="margin-top:12px">Pre-test: '+PRE.length+' preguntas cerradas, antes de la clase, para entrar en el caso. Post-test: '+POST.length+' preguntas (cerradas y abiertas) después del contenido.</p>'+
       savedHtml()+'</section></div>'+compareHtml()+
       '<div class="row end"><button class="btn" id="lb" type="button">'+ic('logout')+'Cerrar sesión</button></div>';
     $('#cpc').onclick=function(){copy(code,this)};
@@ -3050,9 +3108,9 @@ function hostDraw(){
 var SH={
   st:function(d){
     gotSt=true;clearInterval(helloT);
-    var p=st;st=d;
+    var p=st;st=d;setQ();
     if(d.ph==='lobby'){mine=null;rev=null;fin=null}
-    else if(d.ph==='q'&&(p.ph!=='q'||p.i!==d.i)){mine=null;rev=null}
+    else if(d.ph==='q'&&(p.ph!=='q'||p.i!==d.i||p.mode!==d.mode)){mine=null;rev=null}
     t0=Date.now()-(d.dur*1000-(d.left||0));
     draw();
   },
@@ -3082,7 +3140,7 @@ function stuDraw(){
   var q=Q[st.i],b;
   if(st.ph==='lobby'){
     app.innerHTML='<div class="center"><div class="badge ok">'+ic('check')+'</div><p class="big">Estás dentro, '+esc(me)+'</p>'+
-      '<p class="muted">Sala '+code+' · espera a que el docente inicie el cuestionario.</p><span class="status wait">'+ic('refresh','spin')+'Esperando…</span>'+
+      '<p class="muted">Sala '+code+' · el pre-test es corto y cerrado: sirve para entrar en tema antes de la clase.</p><span class="status wait">'+ic('refresh','spin')+'Esperando…</span>'+
       '<button class="btn" id="lb" type="button">'+ic('logout')+'Salir</button></div>';
   }else if(st.ph==='q'){
     if(mine!=null){
@@ -3137,7 +3195,8 @@ function stuDraw(){
 }
 
 function draw(){
-  var v=(host?'h':'s')+st.ph+st.i;
+  setQ();
+  var v=(host?'h':'s')+st.mode+st.ph+st.i;
   if(host)hostDraw();else stuDraw();
   if(v!==view){view=v;window.scrollTo(0,0)}
 }
